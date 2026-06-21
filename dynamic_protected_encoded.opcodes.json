@@ -1,0 +1,1512 @@
+{
+    "format": "icdump-ir-v1",
+    "source_file": "C:\\Users\\dev\\Desktop\\ic81dump-opcodes\\dynamic_protected_encoded.php",
+    "summary": {
+        "op_array_count": 3,
+        "function_count": 2,
+        "closure_count": 0,
+        "class_count": 0
+    },
+    "entry": "main",
+    "op_arrays": {
+        "main": {
+            "id": "main",
+            "kind": "main",
+            "meta": [],
+            "function_name": {
+                "type": "null",
+                "value": null
+            },
+            "filename": {
+                "type": "string",
+                "length": 69,
+                "printable": true,
+                "value": "C:\\Users\\dev\\Desktop\\ic81dump-opcodes\\dynamic_protected_encoded.php",
+                "preview": "C:\\Users\\dev\\Desktop\\ic81dump-opcodes\\dynamic_protected_encoded.php",
+                "hex": "433a5c55736572735c736162696e5c4465736b746f705c6963383164756d702d6f70636f6465735c64796e616d69635f70726f7465637465645f656e636f6465642e706870",
+                "base64": "QzpcVXNlcnNcc2FiaW5cRGVza3RvcFxpYzgxZHVtcC1vcGNvZGVzXGR5bmFtaWNfcHJvdGVjdGVkX2VuY29kZWQucGhw",
+                "sha1": "de852e2206a4a2a0a4876281c987e058bc1a394f"
+            },
+            "scope": {
+                "type": "null",
+                "value": null
+            },
+            "line_start": 1,
+            "line_end": 17,
+            "fn_flags": 67108864,
+            "fn_flags_decoded": {
+                "visibility": "none",
+                "is_static": false,
+                "is_abstract": false,
+                "is_final": false,
+                "is_ctor": false,
+                "is_dtor": false,
+                "is_deprecated": false,
+                "is_closure": false,
+                "is_generator": false,
+                "is_variadic": false,
+                "returns_reference": true,
+                "has_return_type": false
+            },
+            "num_args": 0,
+            "required_num_args": 0,
+            "arg_info": [],
+            "return_type_info": null,
+            "doc_comment": {
+                "type": "null",
+                "value": null
+            },
+            "vars": {
+                "type": "array",
+                "value": [
+                    {
+                        "type": "string",
+                        "length": 11,
+                        "printable": true,
+                        "value": "licenseSalt",
+                        "preview": "licenseSalt",
+                        "hex": "6c6963656e736553616c74",
+                        "base64": "bGljZW5zZVNhbHQ=",
+                        "sha1": "285f8a18a963f66dbc3393a451f2766be08c982e"
+                    }
+                ]
+            },
+            "vars_raw": {
+                "type": "array",
+                "value": [
+                    {
+                        "type": "string",
+                        "length": 11,
+                        "printable": true,
+                        "value": "licenseSalt",
+                        "preview": "licenseSalt",
+                        "hex": "6c6963656e736553616c74",
+                        "base64": "bGljZW5zZVNhbHQ=",
+                        "sha1": "285f8a18a963f66dbc3393a451f2766be08c982e"
+                    }
+                ]
+            },
+            "last_var": 1,
+            "T": 2,
+            "static_variables": {
+                "type": "null",
+                "value": null
+            },
+            "try_catch": [],
+            "live_range": [],
+            "literals": [
+                {
+                    "index": 0,
+                    "type": "string",
+                    "length": 15,
+                    "printable": true,
+                    "value": "CLIENT_ABC_2026",
+                    "preview": "CLIENT_ABC_2026",
+                    "hex": "434c49454e545f4142435f32303236",
+                    "base64": "Q0xJRU5UX0FCQ18yMDI2",
+                    "sha1": "5b5c2237c5051617eb191b42d7113ae199369364"
+                },
+                {
+                    "index": 1,
+                    "type": "string",
+                    "length": 14,
+                    "printable": true,
+                    "value": "premiumfeature",
+                    "preview": "premiumfeature",
+                    "hex": "7072656d69756d66656174757265",
+                    "base64": "cHJlbWl1bWZlYXR1cmU=",
+                    "sha1": "422bd829a45397975008550bc5e708f455d74f05"
+                },
+                {
+                    "index": 2,
+                    "type": "int",
+                    "value": 1
+                }
+            ],
+            "opcodes": [
+                {
+                    "index": 0,
+                    "line": 3,
+                    "lineno_raw": null,
+                    "opcode": 22,
+                    "opcode_name": "ZEND_ASSIGN",
+                    "handler": 354804400,
+                    "extended_value": 0,
+                    "extended_value_decoded": null,
+                    "op1": {
+                        "type": 8,
+                        "type_name": "IS_CV",
+                        "constant": 48,
+                        "var": 48,
+                        "num": 48,
+                        "opline_num": 48,
+                        "cv_name": "licenseSalt",
+                        "cv_index": 0
+                    },
+                    "op2": {
+                        "type": 1,
+                        "type_name": "IS_CONST",
+                        "constant": 0,
+                        "var": 0,
+                        "num": 0,
+                        "opline_num": 0,
+                        "cv_name": null,
+                        "literal": {
+                            "type": "string",
+                            "length": 15,
+                            "printable": true,
+                            "value": "CLIENT_ABC_2026",
+                            "preview": "CLIENT_ABC_2026",
+                            "hex": "434c49454e545f4142435f32303236",
+                            "base64": "Q0xJRU5UX0FCQ18yMDI2",
+                            "sha1": "5b5c2237c5051617eb191b42d7113ae199369364"
+                        }
+                    },
+                    "result": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 0,
+                        "var": 0,
+                        "num": 0,
+                        "opline_num": 0,
+                        "cv_name": null
+                    },
+                    "jump_targets": [],
+                    "is_call": false,
+                    "is_include_or_eval": false,
+                    "is_lambda_declare": false,
+                    "opcode_raw": 22,
+                    "opcode_xor_decoded": 22,
+                    "resolved_opcode_source": "zend_vm_handler",
+                    "ic_meta_flags": 296071,
+                    "ic_operand_flags": 0
+                },
+                {
+                    "index": 1,
+                    "line": 17,
+                    "lineno_raw": null,
+                    "opcode": 61,
+                    "opcode_name": "ZEND_INIT_FCALL",
+                    "handler": 354558000,
+                    "extended_value": 0,
+                    "extended_value_decoded": null,
+                    "op1": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 48,
+                        "var": 48,
+                        "num": 48,
+                        "opline_num": 48,
+                        "cv_name": null
+                    },
+                    "op2": {
+                        "type": 1,
+                        "type_name": "IS_CONST",
+                        "constant": 1,
+                        "var": 1,
+                        "num": 1,
+                        "opline_num": 1,
+                        "cv_name": null,
+                        "literal": {
+                            "type": "string",
+                            "length": 14,
+                            "printable": true,
+                            "value": "premiumfeature",
+                            "preview": "premiumfeature",
+                            "hex": "7072656d69756d66656174757265",
+                            "base64": "cHJlbWl1bWZlYXR1cmU=",
+                            "sha1": "422bd829a45397975008550bc5e708f455d74f05"
+                        },
+                        "resolved_literal": {
+                            "type": "string",
+                            "length": 14,
+                            "printable": true,
+                            "value": "premiumFeature",
+                            "preview": "premiumFeature",
+                            "hex": "7072656d69756d46656174757265",
+                            "base64": "cHJlbWl1bUZlYXR1cmU=",
+                            "sha1": "e7cff237daaf4f083ce60db82af573e742a19f51"
+                        },
+                        "resolved_literal_source": "function_table"
+                    },
+                    "result": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 0,
+                        "var": 0,
+                        "num": 0,
+                        "opline_num": 0,
+                        "cv_name": null
+                    },
+                    "jump_targets": [],
+                    "is_call": true,
+                    "is_include_or_eval": false,
+                    "is_lambda_declare": false,
+                    "opcode_raw": 61,
+                    "opcode_xor_decoded": 61,
+                    "resolved_opcode_source": "zend_vm_handler",
+                    "ic_meta_flags": 296071,
+                    "ic_operand_flags": 0,
+                    "resolved_function_name": "premiumFeature",
+                    "call_name": "premiumFeature",
+                    "resolved_function_name_source": "function_table",
+                    "resolved_function_type": 2
+                },
+                {
+                    "index": 2,
+                    "line": 17,
+                    "lineno_raw": null,
+                    "opcode": 60,
+                    "opcode_name": "ZEND_DO_FCALL",
+                    "handler": 354541520,
+                    "extended_value": 0,
+                    "extended_value_decoded": null,
+                    "op1": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 0,
+                        "var": 0,
+                        "num": 0,
+                        "opline_num": 0,
+                        "cv_name": null
+                    },
+                    "op2": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 0,
+                        "var": 0,
+                        "num": 0,
+                        "opline_num": 0,
+                        "cv_name": null
+                    },
+                    "result": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 1,
+                        "var": 1,
+                        "num": 1,
+                        "opline_num": 1,
+                        "cv_name": null
+                    },
+                    "jump_targets": [],
+                    "is_call": true,
+                    "is_include_or_eval": false,
+                    "is_lambda_declare": false,
+                    "opcode_raw": 60,
+                    "opcode_xor_decoded": 60,
+                    "resolved_opcode_source": "zend_vm_handler",
+                    "ic_meta_flags": 296071,
+                    "ic_operand_flags": 0
+                },
+                {
+                    "index": 3,
+                    "line": 17,
+                    "lineno_raw": null,
+                    "opcode": 62,
+                    "opcode_name": "ZEND_RETURN",
+                    "handler": 354565376,
+                    "extended_value": -1,
+                    "extended_value_decoded": null,
+                    "op1": {
+                        "type": 1,
+                        "type_name": "IS_CONST",
+                        "constant": 2,
+                        "var": 2,
+                        "num": 2,
+                        "opline_num": 2,
+                        "cv_name": null,
+                        "literal": {
+                            "type": "int",
+                            "value": 1
+                        }
+                    },
+                    "op2": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 0,
+                        "var": 0,
+                        "num": 0,
+                        "opline_num": 0,
+                        "cv_name": null
+                    },
+                    "result": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 0,
+                        "var": 0,
+                        "num": 0,
+                        "opline_num": 0,
+                        "cv_name": null
+                    },
+                    "jump_targets": [],
+                    "is_call": false,
+                    "is_include_or_eval": false,
+                    "is_lambda_declare": false,
+                    "opcode_raw": 62,
+                    "opcode_xor_decoded": 62,
+                    "resolved_opcode_source": "zend_vm_handler",
+                    "ic_meta_flags": 296071,
+                    "ic_operand_flags": 0
+                }
+            ],
+            "cfg": {
+                "blocks": [
+                    {
+                        "id": "B0",
+                        "start": 0,
+                        "end": 3
+                    }
+                ],
+                "edges": []
+            },
+            "analysis": {
+                "opcode_stats": {
+                    "ZEND_ASSIGN": 1,
+                    "ZEND_DO_FCALL": 1,
+                    "ZEND_INIT_FCALL": 1,
+                    "ZEND_RETURN": 1
+                },
+                "literal_xrefs": [
+                    [
+                        {
+                            "opcode_index": 0,
+                            "opcode_name": "ZEND_ASSIGN",
+                            "operand": "op2"
+                        }
+                    ],
+                    [
+                        {
+                            "opcode_index": 1,
+                            "opcode_name": "ZEND_INIT_FCALL",
+                            "operand": "op2"
+                        }
+                    ],
+                    [
+                        {
+                            "opcode_index": 3,
+                            "opcode_name": "ZEND_RETURN",
+                            "operand": "op1"
+                        }
+                    ]
+                ],
+                "sites": {
+                    "calls": [
+                        {
+                            "opcode_index": 1,
+                            "opcode_name": "ZEND_INIT_FCALL",
+                            "line": 17,
+                            "op1": {
+                                "type": 0,
+                                "type_name": "IS_UNUSED",
+                                "constant": 48,
+                                "var": 48,
+                                "num": 48,
+                                "opline_num": 48,
+                                "cv_name": null
+                            },
+                            "op2": {
+                                "type": 1,
+                                "type_name": "IS_CONST",
+                                "constant": 1,
+                                "var": 1,
+                                "num": 1,
+                                "opline_num": 1,
+                                "cv_name": null,
+                                "literal": {
+                                    "type": "string",
+                                    "length": 14,
+                                    "printable": true,
+                                    "value": "premiumfeature",
+                                    "preview": "premiumfeature",
+                                    "hex": "7072656d69756d66656174757265",
+                                    "base64": "cHJlbWl1bWZlYXR1cmU=",
+                                    "sha1": "422bd829a45397975008550bc5e708f455d74f05"
+                                },
+                                "resolved_literal": {
+                                    "type": "string",
+                                    "length": 14,
+                                    "printable": true,
+                                    "value": "premiumFeature",
+                                    "preview": "premiumFeature",
+                                    "hex": "7072656d69756d46656174757265",
+                                    "base64": "cHJlbWl1bUZlYXR1cmU=",
+                                    "sha1": "e7cff237daaf4f083ce60db82af573e742a19f51"
+                                },
+                                "resolved_literal_source": "function_table"
+                            }
+                        },
+                        {
+                            "opcode_index": 2,
+                            "opcode_name": "ZEND_DO_FCALL",
+                            "line": 17,
+                            "op1": {
+                                "type": 0,
+                                "type_name": "IS_UNUSED",
+                                "constant": 0,
+                                "var": 0,
+                                "num": 0,
+                                "opline_num": 0,
+                                "cv_name": null
+                            },
+                            "op2": {
+                                "type": 0,
+                                "type_name": "IS_UNUSED",
+                                "constant": 0,
+                                "var": 0,
+                                "num": 0,
+                                "opline_num": 0,
+                                "cv_name": null
+                            }
+                        }
+                    ],
+                    "include_eval": [],
+                    "lambda_declarations": [],
+                    "assignments": [
+                        {
+                            "opcode_index": 0,
+                            "opcode_name": "ZEND_ASSIGN",
+                            "line": 3,
+                            "op1": {
+                                "type": 8,
+                                "type_name": "IS_CV",
+                                "constant": 48,
+                                "var": 48,
+                                "num": 48,
+                                "opline_num": 48,
+                                "cv_name": "licenseSalt",
+                                "cv_index": 0
+                            },
+                            "op2": {
+                                "type": 1,
+                                "type_name": "IS_CONST",
+                                "constant": 0,
+                                "var": 0,
+                                "num": 0,
+                                "opline_num": 0,
+                                "cv_name": null,
+                                "literal": {
+                                    "type": "string",
+                                    "length": 15,
+                                    "printable": true,
+                                    "value": "CLIENT_ABC_2026",
+                                    "preview": "CLIENT_ABC_2026",
+                                    "hex": "434c49454e545f4142435f32303236",
+                                    "base64": "Q0xJRU5UX0FCQ18yMDI2",
+                                    "sha1": "5b5c2237c5051617eb191b42d7113ae199369364"
+                                }
+                            },
+                            "result": {
+                                "type": 0,
+                                "type_name": "IS_UNUSED",
+                                "constant": 0,
+                                "var": 0,
+                                "num": 0,
+                                "opline_num": 0,
+                                "cv_name": null
+                            }
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "opcode_index": 3,
+                            "opcode_name": "ZEND_RETURN",
+                            "line": 17,
+                            "op1": {
+                                "type": 1,
+                                "type_name": "IS_CONST",
+                                "constant": 2,
+                                "var": 2,
+                                "num": 2,
+                                "opline_num": 2,
+                                "cv_name": null,
+                                "literal": {
+                                    "type": "int",
+                                    "value": 1
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "closure_report": {
+                "declared_lambdas": 0,
+                "dumped_closure_op_arrays": 0,
+                "missing": 0
+            }
+        },
+        "function:646b": {
+            "id": "function:646b",
+            "kind": "function",
+            "meta": {
+                "function_table_key": {
+                    "type": "string",
+                    "length": 2,
+                    "printable": true,
+                    "value": "dk",
+                    "preview": "dk",
+                    "hex": "646b",
+                    "base64": "ZGs=",
+                    "sha1": "d5658db4705ff5c6ad3f152c4393f61ac86bd27f"
+                },
+                "function_table_key_hex": "646b"
+            },
+            "function_name": {
+                "type": "string",
+                "length": 2,
+                "printable": true,
+                "value": "dk",
+                "preview": "dk",
+                "hex": "646b",
+                "base64": "ZGs=",
+                "sha1": "d5658db4705ff5c6ad3f152c4393f61ac86bd27f"
+            },
+            "filename": {
+                "type": "string",
+                "length": 69,
+                "printable": true,
+                "value": "C:\\Users\\dev\\Desktop\\ic81dump-opcodes\\dynamic_protected_encoded.php",
+                "preview": "C:\\Users\\dev\\Desktop\\ic81dump-opcodes\\dynamic_protected_encoded.php",
+                "hex": "433a5c55736572735c736162696e5c4465736b746f705c6963383164756d702d6f70636f6465735c64796e616d69635f70726f7465637465645f656e636f6465642e706870",
+                "base64": "QzpcVXNlcnNcc2FiaW5cRGVza3RvcFxpYzgxZHVtcC1vcGNvZGVzXGR5bmFtaWNfcHJvdGVjdGVkX2VuY29kZWQucGhw",
+                "sha1": "de852e2206a4a2a0a4876281c987e058bc1a394f"
+            },
+            "scope": {
+                "type": "null",
+                "value": null
+            },
+            "line_start": 5,
+            "line_end": 9,
+            "fn_flags": 512,
+            "fn_flags_decoded": {
+                "visibility": "none",
+                "is_static": false,
+                "is_abstract": false,
+                "is_final": false,
+                "is_ctor": false,
+                "is_dtor": false,
+                "is_deprecated": false,
+                "is_closure": false,
+                "is_generator": false,
+                "is_variadic": false,
+                "returns_reference": false,
+                "has_return_type": false
+            },
+            "num_args": 0,
+            "required_num_args": 0,
+            "arg_info": [],
+            "return_type_info": null,
+            "doc_comment": {
+                "type": "null",
+                "value": null
+            },
+            "vars": {
+                "type": "array",
+                "value": [
+                    {
+                        "type": "string",
+                        "length": 11,
+                        "printable": true,
+                        "value": "licenseSalt",
+                        "preview": "licenseSalt",
+                        "hex": "6c6963656e736553616c74",
+                        "base64": "bGljZW5zZVNhbHQ=",
+                        "sha1": "285f8a18a963f66dbc3393a451f2766be08c982e"
+                    }
+                ]
+            },
+            "vars_raw": {
+                "type": "array",
+                "value": [
+                    {
+                        "type": "string",
+                        "length": 11,
+                        "printable": true,
+                        "value": "licenseSalt",
+                        "preview": "licenseSalt",
+                        "hex": "6c6963656e736553616c74",
+                        "base64": "bGljZW5zZVNhbHQ=",
+                        "sha1": "285f8a18a963f66dbc3393a451f2766be08c982e"
+                    }
+                ]
+            },
+            "last_var": 1,
+            "T": 1,
+            "static_variables": {
+                "type": "null",
+                "value": null
+            },
+            "try_catch": [],
+            "live_range": [],
+            "literals": [
+                {
+                    "index": 0,
+                    "type": "string",
+                    "length": 11,
+                    "printable": true,
+                    "value": "licenseSalt",
+                    "preview": "licenseSalt",
+                    "hex": "6c6963656e736553616c74",
+                    "base64": "bGljZW5zZVNhbHQ=",
+                    "sha1": "285f8a18a963f66dbc3393a451f2766be08c982e"
+                },
+                {
+                    "index": 1,
+                    "type": "string",
+                    "length": 4,
+                    "printable": true,
+                    "value": "hash",
+                    "preview": "hash",
+                    "hex": "68617368",
+                    "base64": "aGFzaA==",
+                    "sha1": "2346ad27d7568ba9896f1b7da6b5991251debdf2"
+                },
+                {
+                    "index": 2,
+                    "type": "string",
+                    "length": 4,
+                    "printable": true,
+                    "value": "hash",
+                    "preview": "hash",
+                    "hex": "68617368",
+                    "base64": "aGFzaA==",
+                    "sha1": "2346ad27d7568ba9896f1b7da6b5991251debdf2"
+                },
+                {
+                    "index": 3,
+                    "type": "string",
+                    "length": 6,
+                    "printable": true,
+                    "value": "sha256",
+                    "preview": "sha256",
+                    "hex": "736861323536",
+                    "base64": "c2hhMjU2",
+                    "sha1": "b310da45b1ebf444106a41b7832ab2fbe25dab41"
+                },
+                {
+                    "index": 4,
+                    "type": "null",
+                    "value": null
+                }
+            ],
+            "opcodes": [
+                {
+                    "index": 0,
+                    "line": 7,
+                    "lineno_raw": null,
+                    "opcode": 168,
+                    "opcode_name": "ZEND_BIND_GLOBAL",
+                    "handler": 354812016,
+                    "extended_value": 0,
+                    "extended_value_decoded": null,
+                    "op1": {
+                        "type": 8,
+                        "type_name": "IS_CV",
+                        "constant": 48,
+                        "var": 48,
+                        "num": 48,
+                        "opline_num": 48,
+                        "cv_name": "licenseSalt",
+                        "cv_index": 0
+                    },
+                    "op2": {
+                        "type": 1,
+                        "type_name": "IS_CONST",
+                        "constant": 0,
+                        "var": 0,
+                        "num": 0,
+                        "opline_num": 0,
+                        "cv_name": null,
+                        "literal": {
+                            "type": "string",
+                            "length": 11,
+                            "printable": true,
+                            "value": "licenseSalt",
+                            "preview": "licenseSalt",
+                            "hex": "6c6963656e736553616c74",
+                            "base64": "bGljZW5zZVNhbHQ=",
+                            "sha1": "285f8a18a963f66dbc3393a451f2766be08c982e"
+                        }
+                    },
+                    "result": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 0,
+                        "var": 0,
+                        "num": 0,
+                        "opline_num": 0,
+                        "cv_name": null
+                    },
+                    "jump_targets": [],
+                    "is_call": false,
+                    "is_include_or_eval": false,
+                    "is_lambda_declare": false,
+                    "opcode_raw": 168,
+                    "opcode_xor_decoded": 168,
+                    "resolved_opcode_source": "ioncube_loader_handler",
+                    "ic_meta_flags": 296071,
+                    "ic_operand_flags": 0
+                },
+                {
+                    "index": 1,
+                    "line": 8,
+                    "lineno_raw": null,
+                    "opcode": 59,
+                    "opcode_name": "ZEND_INIT_FCALL_BY_NAME",
+                    "handler": 354557200,
+                    "extended_value": 2,
+                    "extended_value_decoded": null,
+                    "op1": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 0,
+                        "var": 0,
+                        "num": 0,
+                        "opline_num": 0,
+                        "cv_name": null
+                    },
+                    "op2": {
+                        "type": 1,
+                        "type_name": "IS_CONST",
+                        "constant": 1,
+                        "var": 1,
+                        "num": 1,
+                        "opline_num": 1,
+                        "cv_name": null,
+                        "literal": {
+                            "type": "string",
+                            "length": 4,
+                            "printable": true,
+                            "value": "hash",
+                            "preview": "hash",
+                            "hex": "68617368",
+                            "base64": "aGFzaA==",
+                            "sha1": "2346ad27d7568ba9896f1b7da6b5991251debdf2"
+                        },
+                        "resolved_literal": {
+                            "type": "string",
+                            "length": 4,
+                            "printable": true,
+                            "value": "hash",
+                            "preview": "hash",
+                            "hex": "68617368",
+                            "base64": "aGFzaA==",
+                            "sha1": "2346ad27d7568ba9896f1b7da6b5991251debdf2"
+                        },
+                        "resolved_literal_source": "function_table"
+                    },
+                    "result": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 4,
+                        "var": 4,
+                        "num": 4,
+                        "opline_num": 4,
+                        "cv_name": null
+                    },
+                    "jump_targets": [],
+                    "is_call": true,
+                    "is_include_or_eval": false,
+                    "is_lambda_declare": false,
+                    "opcode_raw": 59,
+                    "opcode_xor_decoded": 59,
+                    "resolved_opcode_source": "ioncube_loader_handler",
+                    "ic_meta_flags": 296071,
+                    "ic_operand_flags": 0,
+                    "resolved_function_name": "hash",
+                    "call_name": "hash",
+                    "resolved_function_name_source": "function_table",
+                    "resolved_function_type": 1
+                },
+                {
+                    "index": 2,
+                    "line": 8,
+                    "lineno_raw": null,
+                    "opcode": 116,
+                    "opcode_name": "ZEND_SEND_VAL_EX",
+                    "handler": 354597824,
+                    "extended_value": 0,
+                    "extended_value_decoded": null,
+                    "op1": {
+                        "type": 1,
+                        "type_name": "IS_CONST",
+                        "constant": 3,
+                        "var": 3,
+                        "num": 3,
+                        "opline_num": 3,
+                        "cv_name": null,
+                        "literal": {
+                            "type": "string",
+                            "length": 6,
+                            "printable": true,
+                            "value": "sha256",
+                            "preview": "sha256",
+                            "hex": "736861323536",
+                            "base64": "c2hhMjU2",
+                            "sha1": "b310da45b1ebf444106a41b7832ab2fbe25dab41"
+                        }
+                    },
+                    "op2": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 1,
+                        "var": 1,
+                        "num": 1,
+                        "opline_num": 1,
+                        "cv_name": null
+                    },
+                    "result": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 48,
+                        "var": 48,
+                        "num": 48,
+                        "opline_num": 48,
+                        "cv_name": null
+                    },
+                    "jump_targets": [],
+                    "is_call": false,
+                    "is_include_or_eval": false,
+                    "is_lambda_declare": false,
+                    "opcode_raw": 116,
+                    "opcode_xor_decoded": 116,
+                    "resolved_opcode_source": "ioncube_loader_handler",
+                    "ic_meta_flags": 296071,
+                    "ic_operand_flags": 0
+                },
+                {
+                    "index": 3,
+                    "line": 8,
+                    "lineno_raw": null,
+                    "opcode": 66,
+                    "opcode_name": "ZEND_SEND_VAR_EX",
+                    "handler": 354848592,
+                    "extended_value": 0,
+                    "extended_value_decoded": null,
+                    "op1": {
+                        "type": 8,
+                        "type_name": "IS_CV",
+                        "constant": 48,
+                        "var": 48,
+                        "num": 48,
+                        "opline_num": 48,
+                        "cv_name": "licenseSalt",
+                        "cv_index": 0
+                    },
+                    "op2": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 2,
+                        "var": 2,
+                        "num": 2,
+                        "opline_num": 2,
+                        "cv_name": null
+                    },
+                    "result": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 64,
+                        "var": 64,
+                        "num": 64,
+                        "opline_num": 64,
+                        "cv_name": null
+                    },
+                    "jump_targets": [],
+                    "is_call": false,
+                    "is_include_or_eval": false,
+                    "is_lambda_declare": false,
+                    "opcode_raw": 66,
+                    "opcode_xor_decoded": 66,
+                    "resolved_opcode_source": "ioncube_loader_handler",
+                    "ic_meta_flags": 296071,
+                    "ic_operand_flags": 0
+                },
+                {
+                    "index": 4,
+                    "line": 8,
+                    "lineno_raw": null,
+                    "opcode": 131,
+                    "opcode_name": "ZEND_DO_FCALL_BY_NAME",
+                    "handler": 354540320,
+                    "extended_value": 0,
+                    "extended_value_decoded": null,
+                    "op1": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 0,
+                        "var": 0,
+                        "num": 0,
+                        "opline_num": 0,
+                        "cv_name": null
+                    },
+                    "op2": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 0,
+                        "var": 0,
+                        "num": 0,
+                        "opline_num": 0,
+                        "cv_name": null
+                    },
+                    "result": {
+                        "type": 4,
+                        "type_name": "IS_VAR",
+                        "constant": 64,
+                        "var": 64,
+                        "num": 64,
+                        "opline_num": 64,
+                        "cv_name": null
+                    },
+                    "jump_targets": [],
+                    "is_call": true,
+                    "is_include_or_eval": false,
+                    "is_lambda_declare": false,
+                    "opcode_raw": 131,
+                    "opcode_xor_decoded": 131,
+                    "resolved_opcode_source": "ioncube_loader_handler",
+                    "ic_meta_flags": 296071,
+                    "ic_operand_flags": 0
+                },
+                {
+                    "index": 5,
+                    "line": 8,
+                    "lineno_raw": null,
+                    "opcode": 62,
+                    "opcode_name": "ZEND_RETURN",
+                    "handler": 354680080,
+                    "extended_value": 0,
+                    "extended_value_decoded": null,
+                    "op1": {
+                        "type": 4,
+                        "type_name": "IS_VAR",
+                        "constant": 64,
+                        "var": 64,
+                        "num": 64,
+                        "opline_num": 64,
+                        "cv_name": null
+                    },
+                    "op2": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 0,
+                        "var": 0,
+                        "num": 0,
+                        "opline_num": 0,
+                        "cv_name": null
+                    },
+                    "result": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 0,
+                        "var": 0,
+                        "num": 0,
+                        "opline_num": 0,
+                        "cv_name": null
+                    },
+                    "jump_targets": [],
+                    "is_call": false,
+                    "is_include_or_eval": false,
+                    "is_lambda_declare": false,
+                    "opcode_raw": 62,
+                    "opcode_xor_decoded": 62,
+                    "resolved_opcode_source": "ioncube_loader_handler",
+                    "ic_meta_flags": 296071,
+                    "ic_operand_flags": 0
+                },
+                {
+                    "index": 6,
+                    "line": 9,
+                    "lineno_raw": null,
+                    "opcode": 62,
+                    "opcode_name": "ZEND_RETURN",
+                    "handler": 354565376,
+                    "extended_value": -1,
+                    "extended_value_decoded": null,
+                    "op1": {
+                        "type": 1,
+                        "type_name": "IS_CONST",
+                        "constant": 4,
+                        "var": 4,
+                        "num": 4,
+                        "opline_num": 4,
+                        "cv_name": null,
+                        "literal": {
+                            "type": "null",
+                            "value": null
+                        }
+                    },
+                    "op2": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 0,
+                        "var": 0,
+                        "num": 0,
+                        "opline_num": 0,
+                        "cv_name": null
+                    },
+                    "result": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 0,
+                        "var": 0,
+                        "num": 0,
+                        "opline_num": 0,
+                        "cv_name": null
+                    },
+                    "jump_targets": [],
+                    "is_call": false,
+                    "is_include_or_eval": false,
+                    "is_lambda_declare": false,
+                    "opcode_raw": 62,
+                    "opcode_xor_decoded": 62,
+                    "resolved_opcode_source": "zend_vm_handler",
+                    "ic_meta_flags": 296071,
+                    "ic_operand_flags": 0
+                }
+            ],
+            "cfg": {
+                "blocks": [
+                    {
+                        "id": "B0",
+                        "start": 0,
+                        "end": 6
+                    }
+                ],
+                "edges": []
+            },
+            "analysis": {
+                "opcode_stats": {
+                    "ZEND_BIND_GLOBAL": 1,
+                    "ZEND_DO_FCALL_BY_NAME": 1,
+                    "ZEND_INIT_FCALL_BY_NAME": 1,
+                    "ZEND_RETURN": 2,
+                    "ZEND_SEND_VAL_EX": 1,
+                    "ZEND_SEND_VAR_EX": 1
+                },
+                "literal_xrefs": {
+                    "0": [
+                        {
+                            "opcode_index": 0,
+                            "opcode_name": "ZEND_BIND_GLOBAL",
+                            "operand": "op2"
+                        }
+                    ],
+                    "1": [
+                        {
+                            "opcode_index": 1,
+                            "opcode_name": "ZEND_INIT_FCALL_BY_NAME",
+                            "operand": "op2"
+                        }
+                    ],
+                    "3": [
+                        {
+                            "opcode_index": 2,
+                            "opcode_name": "ZEND_SEND_VAL_EX",
+                            "operand": "op1"
+                        }
+                    ],
+                    "4": [
+                        {
+                            "opcode_index": 6,
+                            "opcode_name": "ZEND_RETURN",
+                            "operand": "op1"
+                        }
+                    ]
+                },
+                "sites": {
+                    "calls": [
+                        {
+                            "opcode_index": 1,
+                            "opcode_name": "ZEND_INIT_FCALL_BY_NAME",
+                            "line": 8,
+                            "op1": {
+                                "type": 0,
+                                "type_name": "IS_UNUSED",
+                                "constant": 0,
+                                "var": 0,
+                                "num": 0,
+                                "opline_num": 0,
+                                "cv_name": null
+                            },
+                            "op2": {
+                                "type": 1,
+                                "type_name": "IS_CONST",
+                                "constant": 1,
+                                "var": 1,
+                                "num": 1,
+                                "opline_num": 1,
+                                "cv_name": null,
+                                "literal": {
+                                    "type": "string",
+                                    "length": 4,
+                                    "printable": true,
+                                    "value": "hash",
+                                    "preview": "hash",
+                                    "hex": "68617368",
+                                    "base64": "aGFzaA==",
+                                    "sha1": "2346ad27d7568ba9896f1b7da6b5991251debdf2"
+                                },
+                                "resolved_literal": {
+                                    "type": "string",
+                                    "length": 4,
+                                    "printable": true,
+                                    "value": "hash",
+                                    "preview": "hash",
+                                    "hex": "68617368",
+                                    "base64": "aGFzaA==",
+                                    "sha1": "2346ad27d7568ba9896f1b7da6b5991251debdf2"
+                                },
+                                "resolved_literal_source": "function_table"
+                            }
+                        },
+                        {
+                            "opcode_index": 4,
+                            "opcode_name": "ZEND_DO_FCALL_BY_NAME",
+                            "line": 8,
+                            "op1": {
+                                "type": 0,
+                                "type_name": "IS_UNUSED",
+                                "constant": 0,
+                                "var": 0,
+                                "num": 0,
+                                "opline_num": 0,
+                                "cv_name": null
+                            },
+                            "op2": {
+                                "type": 0,
+                                "type_name": "IS_UNUSED",
+                                "constant": 0,
+                                "var": 0,
+                                "num": 0,
+                                "opline_num": 0,
+                                "cv_name": null
+                            }
+                        }
+                    ],
+                    "include_eval": [],
+                    "lambda_declarations": [],
+                    "assignments": [],
+                    "returns": [
+                        {
+                            "opcode_index": 5,
+                            "opcode_name": "ZEND_RETURN",
+                            "line": 8,
+                            "op1": {
+                                "type": 4,
+                                "type_name": "IS_VAR",
+                                "constant": 64,
+                                "var": 64,
+                                "num": 64,
+                                "opline_num": 64,
+                                "cv_name": null
+                            }
+                        },
+                        {
+                            "opcode_index": 6,
+                            "opcode_name": "ZEND_RETURN",
+                            "line": 9,
+                            "op1": {
+                                "type": 1,
+                                "type_name": "IS_CONST",
+                                "constant": 4,
+                                "var": 4,
+                                "num": 4,
+                                "opline_num": 4,
+                                "cv_name": null,
+                                "literal": {
+                                    "type": "null",
+                                    "value": null
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "closure_report": {
+                "declared_lambdas": 0,
+                "dumped_closure_op_arrays": 0,
+                "missing": 0
+            }
+        },
+        "function:7072656d69756d66656174757265": {
+            "id": "function:7072656d69756d66656174757265",
+            "kind": "function",
+            "meta": {
+                "function_table_key": {
+                    "type": "string",
+                    "length": 14,
+                    "printable": true,
+                    "value": "premiumfeature",
+                    "preview": "premiumfeature",
+                    "hex": "7072656d69756d66656174757265",
+                    "base64": "cHJlbWl1bWZlYXR1cmU=",
+                    "sha1": "422bd829a45397975008550bc5e708f455d74f05"
+                },
+                "function_table_key_hex": "7072656d69756d66656174757265"
+            },
+            "function_name": {
+                "type": "string",
+                "length": 14,
+                "printable": true,
+                "value": "premiumFeature",
+                "preview": "premiumFeature",
+                "hex": "7072656d69756d46656174757265",
+                "base64": "cHJlbWl1bUZlYXR1cmU=",
+                "sha1": "e7cff237daaf4f083ce60db82af573e742a19f51"
+            },
+            "filename": {
+                "type": "string",
+                "length": 69,
+                "printable": true,
+                "value": "C:\\Users\\dev\\Desktop\\ic81dump-opcodes\\dynamic_protected_encoded.php",
+                "preview": "C:\\Users\\dev\\Desktop\\ic81dump-opcodes\\dynamic_protected_encoded.php",
+                "hex": "433a5c55736572735c736162696e5c4465736b746f705c6963383164756d702d6f70636f6465735c64796e616d69635f70726f7465637465645f656e636f6465642e706870",
+                "base64": "QzpcVXNlcnNcc2FiaW5cRGVza3RvcFxpYzgxZHVtcC1vcGNvZGVzXGR5bmFtaWNfcHJvdGVjdGVkX2VuY29kZWQucGhw",
+                "sha1": "de852e2206a4a2a0a4876281c987e058bc1a394f"
+            },
+            "scope": {
+                "type": "null",
+                "value": null
+            },
+            "line_start": 12,
+            "line_end": 15,
+            "fn_flags": 512,
+            "fn_flags_decoded": {
+                "visibility": "none",
+                "is_static": false,
+                "is_abstract": false,
+                "is_final": false,
+                "is_ctor": false,
+                "is_dtor": false,
+                "is_deprecated": false,
+                "is_closure": false,
+                "is_generator": false,
+                "is_variadic": false,
+                "returns_reference": false,
+                "has_return_type": false
+            },
+            "num_args": 0,
+            "required_num_args": 0,
+            "arg_info": [],
+            "return_type_info": null,
+            "doc_comment": {
+                "type": "null",
+                "value": null
+            },
+            "vars": {
+                "type": "array",
+                "value": []
+            },
+            "vars_raw": {
+                "type": "null",
+                "value": null
+            },
+            "last_var": 0,
+            "T": 0,
+            "static_variables": {
+                "type": "null",
+                "value": null
+            },
+            "try_catch": [],
+            "live_range": [],
+            "literals": [
+                {
+                    "index": 0,
+                    "type": "string",
+                    "length": 42,
+                    "printable": true,
+                    "value": "Dynamic Key function executed successfully",
+                    "preview": "Dynamic Key function executed successfully",
+                    "hex": "44796e616d6963204b65792066756e6374696f6e206578656375746564207375636365737366756c6c79",
+                    "base64": "RHluYW1pYyBLZXkgZnVuY3Rpb24gZXhlY3V0ZWQgc3VjY2Vzc2Z1bGx5",
+                    "sha1": "55847012b8e9401ce7bd614be505b3fde7a393bc"
+                },
+                {
+                    "index": 1,
+                    "type": "null",
+                    "value": null
+                }
+            ],
+            "opcodes": [
+                {
+                    "index": 0,
+                    "line": 14,
+                    "lineno_raw": null,
+                    "opcode": 136,
+                    "opcode_name": "ZEND_ECHO",
+                    "handler": -321140007,
+                    "extended_value": 0,
+                    "extended_value_decoded": null,
+                    "op1": {
+                        "type": 1,
+                        "type_name": "IS_CONST",
+                        "constant": 0,
+                        "var": 0,
+                        "num": 0,
+                        "opline_num": 0,
+                        "cv_name": null,
+                        "literal": {
+                            "type": "string",
+                            "length": 42,
+                            "printable": true,
+                            "value": "Dynamic Key function executed successfully",
+                            "preview": "Dynamic Key function executed successfully",
+                            "hex": "44796e616d6963204b65792066756e6374696f6e206578656375746564207375636365737366756c6c79",
+                            "base64": "RHluYW1pYyBLZXkgZnVuY3Rpb24gZXhlY3V0ZWQgc3VjY2Vzc2Z1bGx5",
+                            "sha1": "55847012b8e9401ce7bd614be505b3fde7a393bc"
+                        }
+                    },
+                    "op2": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 0,
+                        "var": 0,
+                        "num": 0,
+                        "opline_num": 0,
+                        "cv_name": null
+                    },
+                    "result": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 0,
+                        "var": 0,
+                        "num": 0,
+                        "opline_num": 0,
+                        "cv_name": null
+                    },
+                    "jump_targets": [],
+                    "is_call": false,
+                    "is_include_or_eval": false,
+                    "is_lambda_declare": false,
+                    "opcode_raw": 136,
+                    "opcode_xor_decoded": 136,
+                    "resolved_opcode_source": "zend_opcode",
+                    "ic_meta_flags": 296071,
+                    "ic_operand_flags": 0
+                },
+                {
+                    "index": 1,
+                    "line": 15,
+                    "lineno_raw": null,
+                    "opcode": 62,
+                    "opcode_name": "ZEND_RETURN",
+                    "handler": 1283155033,
+                    "extended_value": -1,
+                    "extended_value_decoded": null,
+                    "op1": {
+                        "type": 1,
+                        "type_name": "IS_CONST",
+                        "constant": 1,
+                        "var": 1,
+                        "num": 1,
+                        "opline_num": 1,
+                        "cv_name": null,
+                        "literal": {
+                            "type": "null",
+                            "value": null
+                        }
+                    },
+                    "op2": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 0,
+                        "var": 0,
+                        "num": 0,
+                        "opline_num": 0,
+                        "cv_name": null
+                    },
+                    "result": {
+                        "type": 0,
+                        "type_name": "IS_UNUSED",
+                        "constant": 0,
+                        "var": 0,
+                        "num": 0,
+                        "opline_num": 0,
+                        "cv_name": null
+                    },
+                    "jump_targets": [],
+                    "is_call": false,
+                    "is_include_or_eval": false,
+                    "is_lambda_declare": false,
+                    "opcode_raw": 62,
+                    "opcode_xor_decoded": 62,
+                    "resolved_opcode_source": "zend_opcode",
+                    "ic_meta_flags": 296071,
+                    "ic_operand_flags": 0
+                }
+            ],
+            "cfg": {
+                "blocks": [
+                    {
+                        "id": "B0",
+                        "start": 0,
+                        "end": 1
+                    }
+                ],
+                "edges": []
+            },
+            "analysis": {
+                "opcode_stats": {
+                    "ZEND_ECHO": 1,
+                    "ZEND_RETURN": 1
+                },
+                "literal_xrefs": [
+                    [
+                        {
+                            "opcode_index": 0,
+                            "opcode_name": "ZEND_ECHO",
+                            "operand": "op1"
+                        }
+                    ],
+                    [
+                        {
+                            "opcode_index": 1,
+                            "opcode_name": "ZEND_RETURN",
+                            "operand": "op1"
+                        }
+                    ]
+                ],
+                "sites": {
+                    "calls": [],
+                    "include_eval": [],
+                    "lambda_declarations": [],
+                    "assignments": [],
+                    "returns": [
+                        {
+                            "opcode_index": 1,
+                            "opcode_name": "ZEND_RETURN",
+                            "line": 15,
+                            "op1": {
+                                "type": 1,
+                                "type_name": "IS_CONST",
+                                "constant": 1,
+                                "var": 1,
+                                "num": 1,
+                                "opline_num": 1,
+                                "cv_name": null,
+                                "literal": {
+                                    "type": "null",
+                                    "value": null
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "closure_report": {
+                "declared_lambdas": 0,
+                "dumped_closure_op_arrays": 0,
+                "missing": 0
+            }
+        }
+    },
+    "function_index": {
+        "646b": "function:646b",
+        "7072656d69756d66656174757265": "function:7072656d69756d66656174757265"
+    },
+    "closure_index": [],
+    "class_index": [],
+    "ioncube_api_calls": {
+        "type": "array",
+        "value": []
+    }
+}

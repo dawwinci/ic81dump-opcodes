@@ -655,6 +655,10 @@ typedef struct _opcodedump_opcode_capture_entry {
 static opcodedump_opcode_capture_entry opcodedump_opcode_capture_map[OPCODEDUMP_OPCODE_CAPTURE_MAP_SIZE];
 static int opcodedump_opcode_capture_hook_installed = 0;
 static int opcodedump_opcode_setter_hook_installed = 0;
+/* When non-NULL, the VM loop hook passes through any IC function that is NOT
+ * this pointer, so dynamic-key providers (e.g. dk()) can actually execute and
+ * return the key needed to decrypt the real target function. */
+static volatile zend_op_array *opcodedump_dynkey_capture_target = NULL;
 typedef int (__fastcall *ic_dynamic_op_array_materialize_fn)(zend_op_array *op_array);
 typedef unsigned char (__fastcall *ic_dynamic_key_resolve_fn)(void *key_spec, char *edx_arg,
                                                               uint32_t arg0, uint32_t arg4, uint32_t arg8,
@@ -1099,7 +1103,6 @@ static void ic_dynamic_save_entry_copy(ic_dynamic_saved_op_array *entry, zend_op
 	if (!oa->opcodes || ((uintptr_t)oa->opcodes & 3) != 0 || oa->last == 0) return;
 	capture_old_ops = oa->opcodes;
 	capture_old_last = oa->last;
-	if (!entry->valid) ic_dynamic_saved_generic_valid_count++;
 	memcpy(&entry->copy, oa, sizeof(entry->copy));
 #ifdef PHP_WIN32
 	/* Stabilize the transient step1 opcode/literal memory into the snapshot. */
@@ -1108,6 +1111,11 @@ static void ic_dynamic_save_entry_copy(ic_dynamic_saved_op_array *entry, zend_op
 	__except(EXCEPTION_EXECUTE_HANDLER) {}
 	__try { ic_fixup_lazy_branch_targets(&entry->copy); } __except(EXCEPTION_EXECUTE_HANDLER) {}
 #endif
+	if (!entry->copy.opcodes || ((uintptr_t)entry->copy.opcodes & 3) != 0 ||
+	    entry->copy.last == 0 || entry->copy.last >= 65536) {
+		return;
+	}
+	if (!entry->valid) ic_dynamic_saved_generic_valid_count++;
 	entry->valid = 1;
 	entry->saves++;
 	entry->oa = oa;
@@ -2371,7 +2379,7 @@ static void inline _dasm_properties_info(zval *dst, const zend_property_info *sr
 	} else {
 		add_assoc_null(dst, "ce");
 	}
-	/* PHP 8.x: typed properties — type is a zend_type struct. */
+	/* PHP 8.x: typed properties - type is a zend_type struct. */
 	add_assoc_long(dst, "prop_type", (zend_long)ZEND_TYPE_FULL_MASK(src->type));
 	add_assoc_bool(dst, "prop_has_type", ZEND_TYPE_IS_SET(src->type) ? 1 : 0);
 	if (ZEND_TYPE_HAS_NAME(src->type)) {
@@ -2402,7 +2410,7 @@ static void inline dasm_properties_info(zval *dst, zend_class_entry *ce, int sta
 		array_init(&zv);
 		_dasm_properties_info(&zv, prop_info);
 
-		/* Export the resolved default value — prop was computed but previously unused (bug). */
+		/* Export the resolved default value - prop was computed but previously unused (bug). */
 #ifdef PHP_WIN32
 		__try {
 			if (prop && Z_TYPE_P(prop) != IS_UNDEF) {
@@ -3286,7 +3294,7 @@ void dasm_zend_op_array(zval *dst, const zend_op_array *src)
 /* ============================================================
  * ionCube force-decode  (Windows only)
  * ============================================================
- * PHP 8.1 loader (ioncube_loader_win_8.1.dll) — confirmed by binary analysis.
+ * PHP 8.1 loader (ioncube_loader_win_8.1.dll) - confirmed by binary analysis.
  * At encode time ionCube:
  *    - XOR-encodes op_array->opcodes into descriptor[5]
  *    - replaces opcodes with a small odd sentinel
@@ -3712,6 +3720,51 @@ static int opcodedump_vm_loop_hook_installed = 0;
  * and then SKIPS the body entirely (returns to the loader without executing a
  * single opcode), so the encoded function never produces side effects. */
 static volatile long opcodedump_materialize_active = 0;
+/* Dummy target for the static-variables pointer patch (see below). */
+static uint32_t opcodedump_dynkey_static_vars_dummy = 0;
+#define OPCODEDUMP_MAX_SYNTHETIC_ARGS 4096u
+
+static void ic_runtime_capture_execute_data(void *execute_data); /* forward decl */
+
+/* Called from opcodedump_vm_loop_hook when materialize_active != 0.
+ * Returns 1 if the IC VM body should be SKIPPED (captured successfully),
+ * returns 0 if the function should run normally (passthrough).
+ *
+ * Two passthrough cases:
+ *  a) Key-provider: when capturing a dynkey target, any OTHER IC function
+ *     (e.g. dk()) must execute so it can return the decryption key.
+ *  b) Dynkey target not yet materialised: desc[15] is still 0 at hook entry
+ *     because ic_dynkey_gate_materialize fires inside the VM loop dispatch.
+ *     We let IC execute the body (which triggers gate_materialize internally)
+ *     and recover the opcodes from desc[15] in a post-execution snapshot. */
+static int ic_vm_loop_should_skip_and_capture(void *execute_data)
+{
+	zend_op_array *oa = NULL;
+	ic_dynamic_saved_op_array *entry;
+
+	__try {
+		if (!execute_data) return 1;
+		oa = *(zend_op_array **)((char *)execute_data + 0x0C);
+	} __except(EXCEPTION_EXECUTE_HANDLER) { return 1; }
+
+	if (opcodedump_dynkey_capture_target != NULL &&
+	    (volatile zend_op_array *)oa != opcodedump_dynkey_capture_target) {
+		return 0; /* passthrough: key-provider or other helper */
+	}
+
+	ic_runtime_capture_execute_data(execute_data);
+
+	/* If capture succeeded, skip the body.  If desc[15] was not yet
+	 * populated (dynkey function, body still encrypted at hook entry),
+	 * allow IC to execute so ic_dynkey_gate_materialize can run and
+	 * populate desc[15]; a post-execution snapshot recovers the data. */
+	__try {
+		entry = ic_dynamic_register_saved(oa);
+		if (entry && entry->valid) return 1;
+	} __except(EXCEPTION_EXECUTE_HANDLER) {}
+
+	return 0; /* passthrough: let IC materialise the dynkey function */
+}
 
 static void ic_runtime_capture_execute_data(void *execute_data)
 {
@@ -3733,7 +3786,12 @@ static void ic_runtime_capture_execute_data(void *execute_data)
 		if (ic_desc && dasm_ic_committed_readable_ptr(ic_desc)) {
 			uint32_t d15 = ((const uint32_t *)ic_desc)[15];
 			uint32_t d27 = ((const uint32_t *)ic_desc)[27];
-			if (d15 && (d15 & 3) == 0 && dasm_ic_committed_readable_ptr((const void *)(uintptr_t)d15))
+			/* Only fall back to d15 if the direct opcodes ptr is unusable.
+			 * sub_10071660 sets op_array->opcodes = v7 and d15 = v7 - offset,
+			 * so d15 != opcodes; prefer opcodes directly. */
+			if ((!real_ops || ((uintptr_t)real_ops & 3) != 0) &&
+			    d15 && (d15 & 3) == 0 &&
+			    dasm_ic_committed_readable_ptr((const void *)(uintptr_t)d15))
 				real_ops = (zend_op *)(uintptr_t)d15;
 			if (real_last == 0 && d27 > 0 && d27 < 65536) real_last = d27;
 		}
@@ -3762,14 +3820,20 @@ __declspec(naked) static void opcodedump_vm_loop_hook(void)
 		pushfd
 		pushad
 		push ecx                  /* execute_data (ecx at VM-loop entry) */
-		call ic_runtime_capture_execute_data
+		call ic_vm_loop_should_skip_and_capture
 		add  esp, 4
+		test eax, eax
+		jz   dynkey_passthrough   /* key provider: let it execute normally */
+		/* Snapshot taken; skip the function body entirely. */
 		popad
 		popfd
-		/* Snapshot taken; skip the function body entirely. ecx had no stack args
-		 * (__thiscall), so just return to the loader as if the frame completed. */
 		mov  eax, -1
 		ret
+	dynkey_passthrough:
+		/* This is a key-provider function (e.g. dk()): restore registers and
+		 * fall through to the original IC VM loop prologue so it executes. */
+		popad
+		popfd
 	passthrough:
 		/* relocated original prologue: sub esp,8 ; push ebx ; mov ebx,ecx */
 		sub  esp, 8
@@ -3813,7 +3877,7 @@ static int opcodedump_install_vm_loop_hook(void)
  *     1009bd6f  xor  [esi], ecx        ; *handler ^= key[index]*0x01010101
  * NOPping that 2-byte XOR leaves the real handler in the materialized buffer, so
  * the snapshot's handler->opcode map yields the true opcode directly. Execution
- * of those functions would then mismatch the dispatch-side XOR — harmless here
+ * of those functions would then mismatch the dispatch-side XOR - harmless here
  * because the VM-loop detour skips the body during materialization. */
 #ifndef IC_HANDLER_ENC_XOR_RVA
 #define IC_HANDLER_ENC_XOR_RVA 0x9BD6Fu   /* sub_1009B3C0: xor [esi],ecx (branch 1) */
@@ -3851,10 +3915,29 @@ static int opcodedump_patch_disable_handler_encryption(void)
 	 *   branch 2 (sub_10070170): force the real-handler path    (74 2F -> EB 2F) */
 	static const unsigned char xor_from[2] = { 0x31, 0x0E }, xor_to[2] = { 0x90, 0x90 };
 	static const unsigned char jz_from[2]  = { 0x74, 0x2F }, jz_to[2]  = { 0xEB, 0x2F };
+	int ok_xor, ok_jz;
 	if (opcodedump_handler_enc_patched) return 1;
-	opcodedump_patch_one(IC_HANDLER_ENC_XOR_RVA, xor_from, xor_to, 2);
-	opcodedump_patch_one(IC_HANDLER_ENC_JZ_RVA,  jz_from,  jz_to,  2);
+	ok_xor = opcodedump_patch_one(IC_HANDLER_ENC_XOR_RVA, xor_from, xor_to, 2);
+	ok_jz  = opcodedump_patch_one(IC_HANDLER_ENC_JZ_RVA,  jz_from,  jz_to,  2);
+	if (!ok_xor || !ok_jz) {
+		opcodedump_patch_one(IC_HANDLER_ENC_XOR_RVA, xor_to, xor_from, 2);
+		opcodedump_patch_one(IC_HANDLER_ENC_JZ_RVA,  jz_to,  jz_from,  2);
+		return 0;
+	}
 	opcodedump_handler_enc_patched = 1;
+	return 1;
+}
+
+static int opcodedump_patch_restore_handler_encryption(void)
+{
+	static const unsigned char xor_from[2] = { 0x90, 0x90 }, xor_to[2] = { 0x31, 0x0E };
+	static const unsigned char jz_from[2]  = { 0xEB, 0x2F }, jz_to[2]  = { 0x74, 0x2F };
+	int ok_xor, ok_jz;
+	if (!opcodedump_handler_enc_patched) return 1;
+	ok_xor = opcodedump_patch_one(IC_HANDLER_ENC_XOR_RVA, xor_from, xor_to, 2);
+	ok_jz  = opcodedump_patch_one(IC_HANDLER_ENC_JZ_RVA,  jz_from,  jz_to,  2);
+	if (!ok_xor || !ok_jz) return 0;
+	opcodedump_handler_enc_patched = 0;
 	return 1;
 }
 
@@ -3921,7 +4004,7 @@ static int ic_static_materialize_op_array_snapshot(zend_op_array *oa)
 	if (!entry) return 0;
 	if (entry->valid) return 1;
 
-	opcodedump_patch_disable_handler_encryption();
+	if (!opcodedump_patch_disable_handler_encryption()) return 0;
 	__try { memcpy(&original, oa, sizeof(original)); }
 	__except(EXCEPTION_EXECUTE_HANDLER) { return 0; }
 
@@ -4002,12 +4085,245 @@ static uint32_t ic_static_materialize_all_class_methods(void)
 	return captured;
 }
 
+static int ic_op_array_has_dynkey_encrypted_body(zend_op_array *oa)
+{
+	uint32_t *desc;
+	uint8_t *record;
+	int encrypted = 0;
+
+	if (!oa || !oa->reserved[3]) return 0;
+	__try {
+		desc = (uint32_t *)oa->reserved[3];
+		if (!dasm_ic_committed_readable_ptr(desc + 19) || !desc[19]) return 0;
+		record = (uint8_t *)(uintptr_t)desc[19];
+		if (dasm_ic_committed_readable_ptr(record + 24) && record[24] != 0) {
+			encrypted = 1;
+		}
+	} __except(EXCEPTION_EXECUTE_HANDLER) {
+		encrypted = 0;
+	}
+	return encrypted;
+}
+
+static uint32_t ic_static_materialize_all_functions_from_table(HashTable *function_table)
+{
+	zend_function *zif;
+	uint32_t captured = 0;
+
+	if (!function_table) return 0;
+	ZEND_HASH_FOREACH_PTR(function_table, zif) {
+		zend_op_array *oa;
+
+		if (!zif || zif->type != ZEND_USER_FUNCTION) continue;
+		oa = &zif->op_array;
+		if (!oa->function_name || !oa->reserved[3]) continue; /* encoded only */
+		if (ic_op_array_has_dynkey_encrypted_body(oa)) continue;
+		__try {
+			if (ic_static_materialize_op_array_snapshot(oa)) captured++;
+		} __except(EXCEPTION_EXECUTE_HANDLER) {}
+	} ZEND_HASH_FOREACH_END();
+
+	return captured;
+}
+
+/* Snapshot a dynkey-protected op_array AFTER IC has executed it and
+ * ic_dynkey_gate_materialize has populated desc[15] with the decrypted
+ * opcodes.  Unlike ic_static_materialize_op_array_snapshot this does NOT
+ * call the loader's step1 routine (which cannot resolve dynamic keys). */
+static int ic_dynkey_post_materialize_snapshot(zend_op_array *oa)
+{
+	ic_dynamic_saved_op_array *entry;
+	void *ic_desc;
+	uint32_t d15, d27;
+	zend_op *real_ops;
+	uint32_t real_last;
+	zend_op *prev_ops;
+	uint32_t prev_last;
+
+	__try {
+		ic_desc = oa->reserved[3];
+		if (!ic_desc || !dasm_ic_committed_readable_ptr(ic_desc)) return 0;
+		if (!dasm_ic_committed_readable_ptr((const char *)ic_desc + 112)) return 0;
+		d15 = ((const uint32_t *)ic_desc)[15];
+		d27 = ((const uint32_t *)ic_desc)[27];
+		/* After gate_materialize + sub_10071660: op_array->opcodes = v7 (real opcodes),
+		 * d15 = v7 - offset (NOT the start of opcodes). Prefer op_array->opcodes
+		 * when it is already a valid aligned pointer; only use d15 as last resort. */
+		real_ops = oa->opcodes;
+		if (!real_ops || ((uintptr_t)real_ops & 3u) != 0 ||
+		    !dasm_ic_committed_readable_ptr(real_ops)) {
+			/* op_array->opcodes not usable yet - try d15 */
+			if (!d15 || (d15 & 3u) != 0 ||
+			    !dasm_ic_committed_readable_ptr((const void *)(uintptr_t)d15)) return 0;
+			real_ops = (zend_op *)(uintptr_t)d15;
+		}
+		real_last = oa->last;
+		if (real_last == 0 && d27 > 0 && d27 < 65536) real_last = d27;
+		if (real_last == 0 || real_last >= 65536) return 0;
+
+		entry = ic_dynamic_register_saved(oa);
+		if (!entry) return 0;
+		if (entry->valid) return 1;
+
+		prev_ops  = oa->opcodes;
+		prev_last = oa->last;
+		oa->opcodes = real_ops;
+		oa->last    = real_last;
+		ic_dynamic_save_entry_copy(entry, oa);
+		oa->opcodes = prev_ops;
+		oa->last    = prev_last;
+		return entry->valid ? 1 : 0;
+	} __except(EXCEPTION_EXECUTE_HANDLER) { return 0; }
+}
+
+typedef struct _ic_seeded_global_entry {
+	zend_string *name;
+	zval old_value;
+	int had_old_value;
+} ic_seeded_global_entry;
+
+typedef struct _ic_seeded_global_state {
+	ic_seeded_global_entry *entries;
+	uint32_t count;
+	uint32_t cap;
+} ic_seeded_global_state;
+
+static void ic_seeded_global_state_init(ic_seeded_global_state *state)
+{
+	if (!state) return;
+	memset(state, 0, sizeof(*state));
+}
+
+static int ic_seeded_global_state_find(ic_seeded_global_state *state, zend_string *name)
+{
+	uint32_t i;
+
+	if (!state || !name) return -1;
+	for (i = 0; i < state->count; ++i) {
+		if (state->entries[i].name == name ||
+		    zend_string_equals(state->entries[i].name, name)) {
+			return (int)i;
+		}
+	}
+	return -1;
+}
+
+static int ic_seeded_global_state_remember(ic_seeded_global_state *state, zend_string *name)
+{
+	ic_seeded_global_entry *entry;
+	zval *old_value;
+
+	if (!state || !name) return 0;
+	if (ic_seeded_global_state_find(state, name) >= 0) return 1;
+
+	if (state->count == state->cap) {
+		uint32_t new_cap = state->cap ? state->cap * 2u : 8u;
+		ic_seeded_global_entry *new_entries = state->entries
+		    ? (ic_seeded_global_entry *)erealloc(state->entries,
+		                                        new_cap * sizeof(ic_seeded_global_entry))
+		    : (ic_seeded_global_entry *)emalloc(new_cap * sizeof(ic_seeded_global_entry));
+		if (!new_entries) return 0;
+		memset(new_entries + state->cap, 0,
+		       (new_cap - state->cap) * sizeof(ic_seeded_global_entry));
+		state->entries = new_entries;
+		state->cap = new_cap;
+	}
+
+	entry = &state->entries[state->count++];
+	memset(entry, 0, sizeof(*entry));
+	entry->name = zend_string_copy(name);
+	ZVAL_UNDEF(&entry->old_value);
+
+	old_value = zend_hash_find(&EG(symbol_table), name);
+	if (old_value) {
+		ZVAL_COPY(&entry->old_value, old_value);
+		entry->had_old_value = 1;
+	}
+
+	return 1;
+}
+
+static void ic_seeded_global_state_restore(ic_seeded_global_state *state)
+{
+	uint32_t i;
+
+	if (!state) return;
+	for (i = state->count; i > 0; --i) {
+		ic_seeded_global_entry *entry = &state->entries[i - 1];
+
+		if (!entry->name) continue;
+		if (entry->had_old_value) {
+			zval tmp;
+			ZVAL_COPY(&tmp, &entry->old_value);
+			if (!zend_hash_update(&EG(symbol_table), entry->name, &tmp)) {
+				zval_ptr_dtor(&tmp);
+			}
+			zval_ptr_dtor(&entry->old_value);
+		} else {
+			zend_hash_del(&EG(symbol_table), entry->name);
+		}
+		zend_string_release(entry->name);
+		entry->name = NULL;
+	}
+
+	if (state->entries) {
+		efree(state->entries);
+	}
+	memset(state, 0, sizeof(*state));
+}
+
+static uint32_t ic_seed_simple_main_assignments(zend_op_array *main_oa,
+                                                ic_seeded_global_state *seed_state)
+{
+	uint32_t i, seeded = 0;
+
+	if (!main_oa || !main_oa->opcodes || main_oa->last == 0 ||
+	    !main_oa->vars || main_oa->last_var == 0) {
+		return 0;
+	}
+
+	for (i = 0; i < main_oa->last && i < 65536; ++i) {
+		zend_op *op = &main_oa->opcodes[i];
+		zend_uchar opcode = 0;
+		uint32_t cv_slot, cv_index;
+		zend_string *var_name;
+		zval *literal;
+		zval tmp;
+
+		__try {
+			opcode = dasm_ic_display_opcode(main_oa, op, op->opcode);
+			if (opcode != ZEND_ASSIGN) continue;
+			if (op->op1_type != IS_CV || op->op2_type != IS_CONST) continue;
+			if (!op->op2.zv || dasm_literal_index(main_oa, op->op2.zv) < 0) continue;
+
+			cv_slot = (uint32_t)op->op1.var / (uint32_t)sizeof(zval);
+			if (cv_slot < (uint32_t)ZEND_CALL_FRAME_SLOT) continue;
+			cv_index = cv_slot - (uint32_t)ZEND_CALL_FRAME_SLOT;
+			if (cv_index >= (uint32_t)main_oa->last_var) continue;
+
+			var_name = main_oa->vars[cv_index];
+			literal = op->op2.zv;
+			if (!var_name || !dasm_ic_committed_readable_ptr(var_name)) continue;
+			if (!dasm_ic_committed_readable_ptr(literal)) continue;
+			if (seed_state && !ic_seeded_global_state_remember(seed_state, var_name)) continue;
+
+			ZVAL_COPY(&tmp, literal);
+			if (zend_hash_update(&EG(symbol_table), var_name, &tmp)) {
+				seeded++;
+			} else {
+				zval_ptr_dtor(&tmp);
+			}
+		} __except(EXCEPTION_EXECUTE_HANDLER) {}
+	}
+
+	return seeded;
+}
+
 /* Drive every encoded user function through the loader VM so the dispatch detour
- * snapshots its decrypted opcodes. Calls use null stub args (>= num_args to avoid
- * ArgumentCountError, which is raised before the VM loop entry where we capture);
- * any TypeError/runtime error happens AFTER the snapshot and is swallowed. The
- * op_array pointers are collected first so calling user code cannot invalidate
- * the iterator. */
+ * snapshots its decrypted opcodes. Calls use null stub args (enough to satisfy
+ * required args, capped for corrupt/extreme signatures); any TypeError/runtime
+ * error happens AFTER the snapshot and is swallowed. The op_array pointers are
+ * collected first so calling user code cannot invalidate the iterator. */
 static uint32_t ic_runtime_materialize_all_functions(void)
 {
 	zend_op_array **list;
@@ -4015,7 +4331,7 @@ static uint32_t ic_runtime_materialize_all_functions(void)
 	zend_function *zif;
 
 	if (!CG(function_table)) return 0;
-	opcodedump_patch_disable_handler_encryption(); /* keep materialized handlers plaintext */
+	if (!opcodedump_patch_restore_handler_encryption()) return 0; /* providers must execute with normal IC handlers */
 	cap = zend_hash_num_elements(CG(function_table));
 	if (cap == 0) return 0;
 	list = (zend_op_array **)ecalloc(cap, sizeof(zend_op_array *));
@@ -4029,20 +4345,67 @@ static uint32_t ic_runtime_materialize_all_functions(void)
 		if (count < cap) list[count++] = oa;
 	} ZEND_HASH_FOREACH_END();
 
-	opcodedump_materialize_active = 1; /* detour now snapshots + skips bodies */
+	/* First try the direct loader materializer. This gives normal protected
+	 * functions plaintext handlers/opcodes. Runtime dispatch remains the
+	 * fallback for dynamic-key functions that need their provider to execute. */
+	ic_static_materialize_all_functions_from_table(CG(function_table));
+	opcodedump_patch_restore_handler_encryption();
+
 	for (i = 0; i < count; ++i) {
 		zend_op_array *oa = list[i];
-		zval retval, params[16];
+		zval retval;
+		zval *params = NULL;
 		zend_fcall_info fci;
 		zend_fcall_info_cache fcc;
 		uint32_t n, k;
 		ic_dynamic_saved_op_array *e;
+		zend_op_array original_oa;
+		/* Volatile so these survive a zend_bail_out longjmp inside the call. */
+		volatile int have_original_oa = 0;
+		volatile zend_op_array *voa = NULL;
+		/* Dynkey fix: op_array+0x38 (static_variables) is NULL for dynkey functions
+		 * in the IC loader.  sub_10071750 dereferences it AFTER gate_materialize
+		 * returns, crashing before our hook at sub_1006FF10 is ever reached.
+		 * We temporarily point it at a safe dummy so the hook can fire. */
+		volatile uint32_t  saved38h   = 0;
+		volatile int       patched38h = 0;
+		/* field38h is deterministic from oa so we recalculate rather than store. */
 
 		__try { e = ic_dynamic_register_saved(oa); } __except(EXCEPTION_EXECUTE_HANDLER) { e = NULL; }
 		if (e && e->valid) continue; /* already captured */
+		__try {
+			memcpy(&original_oa, oa, sizeof(original_oa));
+			have_original_oa = 1;
+		} __except(EXCEPTION_EXECUTE_HANDLER) {
+			have_original_oa = 0;
+		}
+
+		/* Always set the capture target to the current op_array so the
+		 * VM-loop hook passes through any IC helper (e.g. a dynamic-key
+		 * provider like dk()) that is NOT the target, allowing it to run
+		 * and return the key before the target body is materialized.
+		 * For regular (non-dynkey) functions this is harmless: the body is
+		 * skipped immediately so no other IC function is ever invoked. */
+		opcodedump_dynkey_capture_target = (volatile zend_op_array *)oa;
+		opcodedump_materialize_active = 1; /* detour now snapshots + skips target */
 
 		n = oa->num_args;
-		if (n > 16) n = 16;
+		if (n > OPCODEDUMP_MAX_SYNTHETIC_ARGS) {
+			if (oa->required_num_args > OPCODEDUMP_MAX_SYNTHETIC_ARGS) {
+				opcodedump_materialize_active = 0;
+				opcodedump_dynkey_capture_target = NULL;
+				continue;
+			}
+			n = oa->required_num_args;
+		}
+		if (n > 0) {
+			params = (zval *)ecalloc(n, sizeof(zval));
+			if (!params) {
+				opcodedump_materialize_active = 0;
+				opcodedump_dynkey_capture_target = NULL;
+				continue;
+			}
+		}
 		memset(&fci, 0, sizeof(fci));
 		memset(&fcc, 0, sizeof(fcc));
 		ZVAL_UNDEF(&retval);
@@ -4059,16 +4422,102 @@ static uint32_t ic_runtime_materialize_all_functions(void)
 		fcc.called_scope = oa->scope;
 		fcc.object = NULL;
 
-		zend_try {
-			__try { (void)zend_call_function(&fci, &fcc); }
-			__except(EXCEPTION_EXECUTE_HANDLER) {}
-		} zend_catch {} zend_end_try();
+		/* Patch op_array+0x38 for dynkey functions (see comment above).
+		 * sub_10071750 decompile shows it reads this field into v5 then does:
+		 *   if (v5 & 1) *(ed+10) = *(v5 + compiler_globals[75])  // MAP_PTR path
+		 *   else        *(ed+10) = *v5                            // direct deref
+		 * For dynkey functions the field is either NULL (-> crash on direct deref)
+		 * or an IC-encoded MAP_PTR value (-> crash on MAP_PTR deref).
+		 * We replace with &dummy (valid, aligned, value=0) so direct deref returns 0. */
+		__try {
+			void *ic_desc = oa->reserved[3];
+			if (ic_desc && dasm_ic_committed_readable_ptr(ic_desc)) {
+				uint32_t drec = ((const uint32_t *)ic_desc)[19];
+				if (drec != 0) {
+					uint32_t *field38h = (uint32_t *)((char *)oa + 0x38);
+					/* Patch unconditionally for dynkey functions - save original value. */
+					saved38h   = (uint32_t)*field38h;
+					*field38h  = (uint32_t)(uintptr_t)&opcodedump_dynkey_static_vars_dummy;
+					patched38h = 1;
+				}
+			}
+		} __except(EXCEPTION_EXECUTE_HANDLER) {}
+
+		{
+			voa = oa;
+
+			zend_try {
+				__try { (void)zend_call_function(&fci, &fcc); }
+				__except(EXCEPTION_EXECUTE_HANDLER) {}
+			} zend_catch {
+				/* longjmp (zend_bail_out) fired inside the call. */
+				opcodedump_materialize_active = 0;
+				opcodedump_dynkey_capture_target = NULL;
+				/* Restore patched field. */
+				__try {
+					if (patched38h) {
+						uint32_t *f = (uint32_t *)((char *)voa + 0x38);
+						*f = (uint32_t)saved38h;
+					}
+				} __except(EXCEPTION_EXECUTE_HANDLER) {}
+				/* Phase 1.5 inside zend_catch: try to snapshot from op_array
+				 * state that gate_materialize set before bailing out. */
+				__try {
+					e = ic_dynamic_register_saved((zend_op_array *)voa);
+					if (!e || !e->valid)
+						ic_dynkey_post_materialize_snapshot((zend_op_array *)voa);
+				} __except(EXCEPTION_EXECUTE_HANDLER) {}
+			} zend_end_try();
+
+		}
+
+		opcodedump_materialize_active = 0;
+		opcodedump_dynkey_capture_target = NULL;
+
+		/* Restore op_array+0x38 (static_variables) to its original value. */
+		__try {
+			if (patched38h) {
+				uint32_t *f = (uint32_t *)((char *)oa + 0x38);
+				*f = (uint32_t)saved38h;
+			}
+		} __except(EXCEPTION_EXECUTE_HANDLER) {}
 
 		if (Z_TYPE(retval) != IS_UNDEF) zval_ptr_dtor(&retval);
 		if (Z_TYPE(fci.function_name) != IS_UNDEF) zval_ptr_dtor(&fci.function_name);
+		if (params) efree(params);
 		if (EG(exception)) zend_clear_exception();
+
+		/* Phase 1.5: immediately after the call, try to snapshot any dynkey
+		 * function that was not captured by the hook (gate_materialize may have
+		 * set op_array->opcodes and op_array->last after hook entry). */
+		__try {
+			e = ic_dynamic_register_saved(oa);
+			if (!e || !e->valid)
+				ic_dynkey_post_materialize_snapshot(oa);
+		} __except(EXCEPTION_EXECUTE_HANDLER) {}
+
+		/* Leave the function table in the same state it had before our synthetic
+		 * call. Captured opcode bodies live in ic_dynamic_saved_generic; restoring
+		 * the original op_array keeps later dynkey provider calls generic and
+		 * independent of traversal order. */
+		__try {
+			if (have_original_oa) {
+				memcpy(oa, &original_oa, sizeof(original_oa));
+			}
+		} __except(EXCEPTION_EXECUTE_HANDLER) {}
 	}
-	opcodedump_materialize_active = 0;
+
+	/* Phase 2: dynkey functions whose desc[15] was 0 at hook-entry time
+	 * were passed through so IC could run ic_dynkey_gate_materialize.
+	 * desc[15] is now populated - snapshot them directly. */
+	for (i = 0; i < count; ++i) {
+		ic_dynamic_saved_op_array *e;
+		__try { e = ic_dynamic_register_saved(list[i]); }
+		__except(EXCEPTION_EXECUTE_HANDLER) { e = NULL; }
+		if (e && e->valid) continue;
+		__try { ic_dynkey_post_materialize_snapshot(list[i]); }
+		__except(EXCEPTION_EXECUTE_HANDLER) {}
+	}
 
 	efree(list);
 	return count;
@@ -4472,6 +4921,10 @@ PHP_FUNCTION(dasm_file)
 #ifdef PHP_WIN32
 	{
 		if (loader_base) {
+			ic_seeded_global_state seeded_globals;
+
+			ic_seeded_global_state_init(&seeded_globals);
+
 			/* Runtime materialization: drive every encoded function through the
 			 * loader VM so the dispatch detour snapshots its decrypted opcodes.
 			 * This is the reliable path for v15.5/8.1 (standalone step1 only yields
@@ -4486,6 +4939,17 @@ PHP_FUNCTION(dasm_file)
 					__try { ic_static_materialize_op_array_snapshot(op_array); }
 					__except(EXCEPTION_EXECUTE_HANDLER) {}
 				} zend_catch { force_decode_bailout = 1; } zend_end_try();
+				if (ic_env_flag_enabled("OPCODEDUMP_RUNTIME_MATERIALIZE")) {
+					__try {
+						ic_dynamic_saved_op_array *main_saved =
+						    ic_dynamic_find_saved_for_dump(op_array, NULL);
+						if (main_saved && main_saved->valid) {
+							ic_seed_simple_main_assignments(&main_saved->copy, &seeded_globals);
+						} else {
+							ic_seed_simple_main_assignments(op_array, &seeded_globals);
+						}
+					} __except(EXCEPTION_EXECUTE_HANDLER) {}
+				}
 			}
 			if (ic_env_flag_enabled("OPCODEDUMP_RUNTIME_MATERIALIZE")) {
 				/* Class methods are not present in CG(function_table), and
@@ -4506,6 +4970,10 @@ PHP_FUNCTION(dasm_file)
 					__except(EXCEPTION_EXECUTE_HANDLER) {}
 				} zend_catch { force_decode_bailout = 1; } zend_end_try();
 			}
+			__try { opcodedump_patch_restore_handler_encryption(); }
+			__except(EXCEPTION_EXECUTE_HANDLER) {}
+			__try { ic_seeded_global_state_restore(&seeded_globals); }
+			__except(EXCEPTION_EXECUTE_HANDLER) {}
 		}
 	}
 #endif

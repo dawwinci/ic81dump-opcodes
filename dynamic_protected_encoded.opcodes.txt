@@ -1,0 +1,668 @@
+Array
+(
+    [filename] => dynamic_protected_encoded.php
+    [op_array] => Array
+        (
+            [type] => 2
+            [function_name] => 
+            [fn_flags] => 67108864
+            [arg_info] => 
+            [num_args] => 0
+            [required_num_args] => 0
+            [refcount] => 2
+            [literals] => Array
+                (
+                    [0] => CLIENT_ABC_2026
+                    [1] => premiumfeature
+                    [2] => 1
+                )
+
+            [last_literal] => 3
+            [opcodes] => Array
+                (
+                    [0] => Array
+                        (
+                            [opcode] => 22
+                            [opcode_raw] => 22
+                            [opcode_xor_decoded] => 22
+                            [resolved_opcode] => 22
+                            [op1_type] => 8
+                            [op2_type] => 1
+                            [result_type] => 0
+                            [extended_value] => 0
+                            [lineno] => 3
+                            [opcode_name] => ZEND_ASSIGN
+                            [resolved_opcode_name] => ZEND_ASSIGN
+                            [resolved_opcode_source] => zend_vm_handler
+                            [ic_meta_flags] => 296071
+                            [ic_operand_flags] => 0
+                            [op1_type_name] => IS_CV
+                            [op2_type_name] => IS_CONST
+                            [result_type_name] => IS_UNUSED
+                            [op2.literal] => CLIENT_ABC_2026
+                            [op1.cv_name] => licenseSalt
+                            [result.constant] => 0
+                            [result.var] => 0
+                            [result.num] => 0
+                            [result.opline_num] => 0
+                            [op1.constant] => 48
+                            [op1.var] => 48
+                            [op1.num] => 48
+                            [op1.opline_num] => 48
+                            [op2.constant] => 0
+                            [op2.var] => 0
+                            [op2.num] => 0
+                            [op2.opline_num] => 0
+                            [handler] => 354804400
+                            [handler_rva] => 385712
+                        )
+
+                    [1] => Array
+                        (
+                            [opcode] => 61
+                            [opcode_raw] => 61
+                            [opcode_xor_decoded] => 61
+                            [resolved_opcode] => 61
+                            [op1_type] => 0
+                            [op2_type] => 1
+                            [result_type] => 0
+                            [extended_value] => 0
+                            [lineno] => 17
+                            [opcode_name] => ZEND_INIT_FCALL
+                            [resolved_opcode_name] => ZEND_INIT_FCALL
+                            [resolved_opcode_source] => zend_vm_handler
+                            [ic_meta_flags] => 296071
+                            [ic_operand_flags] => 0
+                            [op1_type_name] => IS_UNUSED
+                            [op2_type_name] => IS_CONST
+                            [result_type_name] => IS_UNUSED
+                            [op2.literal] => premiumfeature
+                            [result.constant] => 0
+                            [result.var] => 0
+                            [result.num] => 0
+                            [result.opline_num] => 0
+                            [op1.constant] => 48
+                            [op1.var] => 48
+                            [op1.num] => 48
+                            [op1.opline_num] => 48
+                            [op2.constant] => 1
+                            [op2.var] => 1
+                            [op2.num] => 1
+                            [op2.opline_num] => 1
+                            [handler] => 354558000
+                            [handler_rva] => 139312
+                            [resolved_function_name] => premiumFeature
+                            [resolved_function_name_source] => function_table
+                            [resolved_function_type] => 2
+                        )
+
+                    [2] => Array
+                        (
+                            [opcode] => 60
+                            [opcode_raw] => 60
+                            [opcode_xor_decoded] => 60
+                            [resolved_opcode] => 60
+                            [op1_type] => 0
+                            [op2_type] => 0
+                            [result_type] => 0
+                            [extended_value] => 0
+                            [lineno] => 17
+                            [opcode_name] => ZEND_DO_FCALL
+                            [resolved_opcode_name] => ZEND_DO_FCALL
+                            [resolved_opcode_source] => zend_vm_handler
+                            [ic_meta_flags] => 296071
+                            [ic_operand_flags] => 0
+                            [op1_type_name] => IS_UNUSED
+                            [op2_type_name] => IS_UNUSED
+                            [result_type_name] => IS_UNUSED
+                            [result.constant] => 1
+                            [result.var] => 1
+                            [result.num] => 1
+                            [result.opline_num] => 1
+                            [op1.constant] => 0
+                            [op1.var] => 0
+                            [op1.num] => 0
+                            [op1.opline_num] => 0
+                            [op2.constant] => 0
+                            [op2.var] => 0
+                            [op2.num] => 0
+                            [op2.opline_num] => 0
+                            [handler] => 354541520
+                            [handler_rva] => 122832
+                        )
+
+                    [3] => Array
+                        (
+                            [opcode] => 62
+                            [opcode_raw] => 62
+                            [opcode_xor_decoded] => 62
+                            [resolved_opcode] => 62
+                            [op1_type] => 1
+                            [op2_type] => 0
+                            [result_type] => 0
+                            [extended_value] => -1
+                            [lineno] => 17
+                            [opcode_name] => ZEND_RETURN
+                            [resolved_opcode_name] => ZEND_RETURN
+                            [resolved_opcode_source] => zend_vm_handler
+                            [ic_meta_flags] => 296071
+                            [ic_operand_flags] => 0
+                            [op1_type_name] => IS_CONST
+                            [op2_type_name] => IS_UNUSED
+                            [result_type_name] => IS_UNUSED
+                            [op1.literal] => 1
+                            [result.constant] => 0
+                            [result.var] => 0
+                            [result.num] => 0
+                            [result.opline_num] => 0
+                            [op1.constant] => 2
+                            [op1.var] => 2
+                            [op1.num] => 2
+                            [op1.opline_num] => 2
+                            [op2.constant] => 0
+                            [op2.var] => 0
+                            [op2.num] => 0
+                            [op2.opline_num] => 0
+                            [handler] => 354565376
+                            [handler_rva] => 146688
+                        )
+
+                )
+
+            [last] => 4
+            [T] => 2
+            [live_range] => 
+            [last_live_range] => 0
+            [try_catch_array] => 
+            [last_try_catch] => 0
+            [static_variables] => 
+            [closures] => Array
+                (
+                )
+
+            [closure_report] => Array
+                (
+                    [declared_lambdas] => 0
+                    [dumped_closure_op_arrays] => 0
+                    [missing] => 0
+                )
+
+            [filename] => C:\Users\dev\Desktop\ic81dump-opcodes\dynamic_protected_encoded.php
+            [doc_comment] => 
+            [doc_comment_len] => 0
+            [line_start] => 1
+            [line_end] => 17
+            [cache_size] => 4
+            [vars] => Array
+                (
+                    [0] => licenseSalt
+                )
+
+            [last_var] => 1
+            [prototype] => 
+            [scope] => 
+            [return_type_info] => 
+        )
+
+    [function_table] => Array
+        (
+            [dk] => Array
+                (
+                    [op_array] => Array
+                        (
+                            [type] => 2
+                            [function_name] => dk
+                            [fn_flags] => 512
+                            [arg_info] => 
+                            [num_args] => 0
+                            [required_num_args] => 0
+                            [refcount] => 2
+                            [literals] => Array
+                                (
+                                    [0] => licenseSalt
+                                    [1] => hash
+                                    [2] => hash
+                                    [3] => sha256
+                                    [4] => 
+                                )
+
+                            [last_literal] => 5
+                            [opcodes] => Array
+                                (
+                                    [0] => Array
+                                        (
+                                            [opcode] => 168
+                                            [opcode_raw] => 168
+                                            [opcode_xor_decoded] => 168
+                                            [resolved_opcode] => 168
+                                            [op1_type] => 8
+                                            [op2_type] => 1
+                                            [result_type] => 0
+                                            [extended_value] => 0
+                                            [lineno] => 7
+                                            [opcode_name] => ZEND_BIND_GLOBAL
+                                            [resolved_opcode_name] => ZEND_BIND_GLOBAL
+                                            [resolved_opcode_source] => ioncube_loader_handler
+                                            [ic_meta_flags] => 296071
+                                            [ic_operand_flags] => 0
+                                            [op1_type_name] => IS_CV
+                                            [op2_type_name] => IS_CONST
+                                            [result_type_name] => IS_UNUSED
+                                            [op2.literal] => licenseSalt
+                                            [op1.cv_name] => licenseSalt
+                                            [result.constant] => 0
+                                            [result.var] => 0
+                                            [result.num] => 0
+                                            [result.opline_num] => 0
+                                            [op1.constant] => 48
+                                            [op1.var] => 48
+                                            [op1.num] => 48
+                                            [op1.opline_num] => 48
+                                            [op2.constant] => 0
+                                            [op2.var] => 0
+                                            [op2.num] => 0
+                                            [op2.opline_num] => 0
+                                            [handler] => 354812016
+                                            [handler_rva] => 393328
+                                        )
+
+                                    [1] => Array
+                                        (
+                                            [opcode] => 59
+                                            [opcode_raw] => 59
+                                            [opcode_xor_decoded] => 59
+                                            [resolved_opcode] => 59
+                                            [op1_type] => 0
+                                            [op2_type] => 1
+                                            [result_type] => 0
+                                            [extended_value] => 2
+                                            [lineno] => 8
+                                            [opcode_name] => ZEND_INIT_FCALL_BY_NAME
+                                            [resolved_opcode_name] => ZEND_INIT_FCALL_BY_NAME
+                                            [resolved_opcode_source] => ioncube_loader_handler
+                                            [ic_meta_flags] => 296071
+                                            [ic_operand_flags] => 0
+                                            [op1_type_name] => IS_UNUSED
+                                            [op2_type_name] => IS_CONST
+                                            [result_type_name] => IS_UNUSED
+                                            [op2.literal] => hash
+                                            [result.constant] => 4
+                                            [result.var] => 4
+                                            [result.num] => 4
+                                            [result.opline_num] => 4
+                                            [op1.constant] => 0
+                                            [op1.var] => 0
+                                            [op1.num] => 0
+                                            [op1.opline_num] => 0
+                                            [op2.constant] => 1
+                                            [op2.var] => 1
+                                            [op2.num] => 1
+                                            [op2.opline_num] => 1
+                                            [handler] => 354557200
+                                            [handler_rva] => 138512
+                                            [resolved_function_name] => hash
+                                            [resolved_function_name_source] => function_table
+                                            [resolved_function_type] => 1
+                                        )
+
+                                    [2] => Array
+                                        (
+                                            [opcode] => 116
+                                            [opcode_raw] => 116
+                                            [opcode_xor_decoded] => 116
+                                            [resolved_opcode] => 116
+                                            [op1_type] => 1
+                                            [op2_type] => 0
+                                            [result_type] => 0
+                                            [extended_value] => 0
+                                            [lineno] => 8
+                                            [opcode_name] => ZEND_SEND_VAL_EX
+                                            [resolved_opcode_name] => ZEND_SEND_VAL_EX
+                                            [resolved_opcode_source] => ioncube_loader_handler
+                                            [ic_meta_flags] => 296071
+                                            [ic_operand_flags] => 0
+                                            [op1_type_name] => IS_CONST
+                                            [op2_type_name] => IS_UNUSED
+                                            [result_type_name] => IS_UNUSED
+                                            [op1.literal] => sha256
+                                            [result.constant] => 48
+                                            [result.var] => 48
+                                            [result.num] => 48
+                                            [result.opline_num] => 48
+                                            [op1.constant] => 3
+                                            [op1.var] => 3
+                                            [op1.num] => 3
+                                            [op1.opline_num] => 3
+                                            [op2.constant] => 1
+                                            [op2.var] => 1
+                                            [op2.num] => 1
+                                            [op2.opline_num] => 1
+                                            [handler] => 354597824
+                                            [handler_rva] => 179136
+                                        )
+
+                                    [3] => Array
+                                        (
+                                            [opcode] => 66
+                                            [opcode_raw] => 66
+                                            [opcode_xor_decoded] => 66
+                                            [resolved_opcode] => 66
+                                            [op1_type] => 8
+                                            [op2_type] => 0
+                                            [result_type] => 0
+                                            [extended_value] => 0
+                                            [lineno] => 8
+                                            [opcode_name] => ZEND_SEND_VAR_EX
+                                            [resolved_opcode_name] => ZEND_SEND_VAR_EX
+                                            [resolved_opcode_source] => ioncube_loader_handler
+                                            [ic_meta_flags] => 296071
+                                            [ic_operand_flags] => 0
+                                            [op1_type_name] => IS_CV
+                                            [op2_type_name] => IS_UNUSED
+                                            [result_type_name] => IS_UNUSED
+                                            [op1.cv_name] => licenseSalt
+                                            [result.constant] => 64
+                                            [result.var] => 64
+                                            [result.num] => 64
+                                            [result.opline_num] => 64
+                                            [op1.constant] => 48
+                                            [op1.var] => 48
+                                            [op1.num] => 48
+                                            [op1.opline_num] => 48
+                                            [op2.constant] => 2
+                                            [op2.var] => 2
+                                            [op2.num] => 2
+                                            [op2.opline_num] => 2
+                                            [handler] => 354848592
+                                            [handler_rva] => 429904
+                                        )
+
+                                    [4] => Array
+                                        (
+                                            [opcode] => 131
+                                            [opcode_raw] => 131
+                                            [opcode_xor_decoded] => 131
+                                            [resolved_opcode] => 131
+                                            [op1_type] => 0
+                                            [op2_type] => 0
+                                            [result_type] => 4
+                                            [extended_value] => 0
+                                            [lineno] => 8
+                                            [opcode_name] => ZEND_DO_FCALL_BY_NAME
+                                            [resolved_opcode_name] => ZEND_DO_FCALL_BY_NAME
+                                            [resolved_opcode_source] => ioncube_loader_handler
+                                            [ic_meta_flags] => 296071
+                                            [ic_operand_flags] => 0
+                                            [op1_type_name] => IS_UNUSED
+                                            [op2_type_name] => IS_UNUSED
+                                            [result_type_name] => IS_VAR
+                                            [result.constant] => 64
+                                            [result.var] => 64
+                                            [result.num] => 64
+                                            [result.opline_num] => 64
+                                            [op1.constant] => 0
+                                            [op1.var] => 0
+                                            [op1.num] => 0
+                                            [op1.opline_num] => 0
+                                            [op2.constant] => 0
+                                            [op2.var] => 0
+                                            [op2.num] => 0
+                                            [op2.opline_num] => 0
+                                            [handler] => 354540320
+                                            [handler_rva] => 121632
+                                        )
+
+                                    [5] => Array
+                                        (
+                                            [opcode] => 62
+                                            [opcode_raw] => 62
+                                            [opcode_xor_decoded] => 62
+                                            [resolved_opcode] => 62
+                                            [op1_type] => 4
+                                            [op2_type] => 0
+                                            [result_type] => 0
+                                            [extended_value] => 0
+                                            [lineno] => 8
+                                            [opcode_name] => ZEND_RETURN
+                                            [resolved_opcode_name] => ZEND_RETURN
+                                            [resolved_opcode_source] => ioncube_loader_handler
+                                            [ic_meta_flags] => 296071
+                                            [ic_operand_flags] => 0
+                                            [op1_type_name] => IS_VAR
+                                            [op2_type_name] => IS_UNUSED
+                                            [result_type_name] => IS_UNUSED
+                                            [result.constant] => 0
+                                            [result.var] => 0
+                                            [result.num] => 0
+                                            [result.opline_num] => 0
+                                            [op1.constant] => 64
+                                            [op1.var] => 64
+                                            [op1.num] => 64
+                                            [op1.opline_num] => 64
+                                            [op2.constant] => 0
+                                            [op2.var] => 0
+                                            [op2.num] => 0
+                                            [op2.opline_num] => 0
+                                            [handler] => 354680080
+                                            [handler_rva] => 261392
+                                        )
+
+                                    [6] => Array
+                                        (
+                                            [opcode] => 62
+                                            [opcode_raw] => 62
+                                            [opcode_xor_decoded] => 62
+                                            [resolved_opcode] => 62
+                                            [op1_type] => 1
+                                            [op2_type] => 0
+                                            [result_type] => 0
+                                            [extended_value] => -1
+                                            [lineno] => 9
+                                            [opcode_name] => ZEND_RETURN
+                                            [resolved_opcode_name] => ZEND_RETURN
+                                            [resolved_opcode_source] => zend_vm_handler
+                                            [ic_meta_flags] => 296071
+                                            [ic_operand_flags] => 0
+                                            [op1_type_name] => IS_CONST
+                                            [op2_type_name] => IS_UNUSED
+                                            [result_type_name] => IS_UNUSED
+                                            [op1.literal] => 
+                                            [result.constant] => 0
+                                            [result.var] => 0
+                                            [result.num] => 0
+                                            [result.opline_num] => 0
+                                            [op1.constant] => 4
+                                            [op1.var] => 4
+                                            [op1.num] => 4
+                                            [op1.opline_num] => 4
+                                            [op2.constant] => 0
+                                            [op2.var] => 0
+                                            [op2.num] => 0
+                                            [op2.opline_num] => 0
+                                            [handler] => 354565376
+                                            [handler_rva] => 146688
+                                        )
+
+                                )
+
+                            [last] => 7
+                            [T] => 1
+                            [live_range] => 
+                            [last_live_range] => 0
+                            [try_catch_array] => 
+                            [last_try_catch] => 0
+                            [static_variables] => 
+                            [closures] => Array
+                                (
+                                )
+
+                            [closure_report] => Array
+                                (
+                                    [declared_lambdas] => 0
+                                    [dumped_closure_op_arrays] => 0
+                                    [missing] => 0
+                                )
+
+                            [filename] => C:\Users\dev\Desktop\ic81dump-opcodes\dynamic_protected_encoded.php
+                            [doc_comment] => 
+                            [doc_comment_len] => 0
+                            [line_start] => 5
+                            [line_end] => 9
+                            [cache_size] => 8
+                            [vars] => Array
+                                (
+                                    [0] => licenseSalt
+                                )
+
+                            [last_var] => 1
+                            [prototype] => 
+                            [scope] => 
+                            [return_type_info] => 
+                        )
+
+                    [function_table_key] => dk
+                    [function_table_key_hex] => 646b
+                )
+
+            [premiumfeature] => Array
+                (
+                    [op_array] => Array
+                        (
+                            [type] => 2
+                            [function_name] => premiumFeature
+                            [fn_flags] => 512
+                            [arg_info] => 
+                            [num_args] => 0
+                            [required_num_args] => 0
+                            [refcount] => 2
+                            [literals] => Array
+                                (
+                                    [0] => Dynamic Key function executed successfully
+                                    [1] => 
+                                )
+
+                            [last_literal] => 2
+                            [opcodes] => Array
+                                (
+                                    [0] => Array
+                                        (
+                                            [opcode] => 136
+                                            [opcode_raw] => 136
+                                            [opcode_xor_decoded] => 136
+                                            [resolved_opcode] => 136
+                                            [op1_type] => 1
+                                            [op2_type] => 0
+                                            [result_type] => 0
+                                            [extended_value] => 0
+                                            [lineno] => 14
+                                            [opcode_name] => ZEND_ECHO
+                                            [resolved_opcode_name] => ZEND_ECHO
+                                            [resolved_opcode_source] => zend_opcode
+                                            [ic_meta_flags] => 296071
+                                            [ic_operand_flags] => 0
+                                            [op1_type_name] => IS_CONST
+                                            [op2_type_name] => IS_UNUSED
+                                            [result_type_name] => IS_UNUSED
+                                            [op1.literal] => Dynamic Key function executed successfully
+                                            [result.constant] => 0
+                                            [result.var] => 0
+                                            [result.num] => 0
+                                            [result.opline_num] => 0
+                                            [op1.constant] => 0
+                                            [op1.var] => 0
+                                            [op1.num] => 0
+                                            [op1.opline_num] => 0
+                                            [op2.constant] => 0
+                                            [op2.var] => 0
+                                            [op2.num] => 0
+                                            [op2.opline_num] => 0
+                                            [handler] => -321140007
+                                        )
+
+                                    [1] => Array
+                                        (
+                                            [opcode] => 62
+                                            [opcode_raw] => 62
+                                            [opcode_xor_decoded] => 62
+                                            [resolved_opcode] => 62
+                                            [op1_type] => 1
+                                            [op2_type] => 0
+                                            [result_type] => 0
+                                            [extended_value] => -1
+                                            [lineno] => 15
+                                            [opcode_name] => ZEND_RETURN
+                                            [resolved_opcode_name] => ZEND_RETURN
+                                            [resolved_opcode_source] => zend_opcode
+                                            [ic_meta_flags] => 296071
+                                            [ic_operand_flags] => 0
+                                            [op1_type_name] => IS_CONST
+                                            [op2_type_name] => IS_UNUSED
+                                            [result_type_name] => IS_UNUSED
+                                            [op1.literal] => 
+                                            [result.constant] => 0
+                                            [result.var] => 0
+                                            [result.num] => 0
+                                            [result.opline_num] => 0
+                                            [op1.constant] => 1
+                                            [op1.var] => 1
+                                            [op1.num] => 1
+                                            [op1.opline_num] => 1
+                                            [op2.constant] => 0
+                                            [op2.var] => 0
+                                            [op2.num] => 0
+                                            [op2.opline_num] => 0
+                                            [handler] => 1283155033
+                                        )
+
+                                )
+
+                            [last] => 2
+                            [T] => 0
+                            [live_range] => 
+                            [last_live_range] => 0
+                            [try_catch_array] => 
+                            [last_try_catch] => 0
+                            [static_variables] => 
+                            [closures] => Array
+                                (
+                                )
+
+                            [closure_report] => Array
+                                (
+                                    [declared_lambdas] => 0
+                                    [dumped_closure_op_arrays] => 0
+                                    [missing] => 0
+                                )
+
+                            [filename] => C:\Users\dev\Desktop\ic81dump-opcodes\dynamic_protected_encoded.php
+                            [doc_comment] => 
+                            [doc_comment_len] => 0
+                            [line_start] => 12
+                            [line_end] => 15
+                            [cache_size] => 0
+                            [vars] => 
+                            [last_var] => 0
+                            [prototype] => 
+                            [scope] => 
+                            [return_type_info] => 
+                        )
+
+                    [function_table_key] => premiumfeature
+                    [function_table_key_hex] => 7072656d69756d66656174757265
+                )
+
+        )
+
+    [class_table] => Array
+        (
+        )
+
+    [ioncube_api_calls] => Array
+        (
+        )
+
+    [ioncube_api_seen] => 0
+    [ioncube_api_captured] => 0
+    [ioncube_api_truncated] => 0
+)
+
