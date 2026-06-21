@@ -1,7 +1,7 @@
 # PHP 8.1 ionCube Opcode Dumper
 
 This repository contains a Windows x86 PHP extension and a PHP-side export
-pipeline that capture complete Zend opcode arrays from ionCube-encoded PHP
+pipeline that captures complete Zend opcode arrays from ionCube-encoded PHP
 files.
 
 The implementation is intentionally tied to the exact runtime bundled in this
@@ -32,7 +32,13 @@ The loader-specific RVAs documented below were identified in:
 ```text
 runtime/ext/ioncube_loader_win_8.1.dll
 ionCube PHP Loader 15.5.0
+SHA-256: 6C0CD1F063E5C3526946CA5898D7977C4A7F21242DC7A76CA96879D92838DD6B
 ```
+
+The loader filename alone is not sufficient to identify the analyzed build.
+The RVAs and instruction sequences in this document apply to the exact SHA-256
+above; another `ioncube_loader_win_8.1.dll` may have different code at the same
+addresses.
 
 The bundled runtime uses:
 
@@ -100,6 +106,7 @@ A complete result includes:
 
 - the top-level `{main}` op-array;
 - every user function declared by the file;
+- dynamic-key-protected global functions and their key providers;
 - every class declared by the file;
 - every user method in each class function table;
 - closures and dynamic function definitions when available;
@@ -690,7 +697,8 @@ This proved three important facts:
 2. The handler pointer, not the stored opcode byte, controls execution.
 3. The materialized opcode array is valid at VM-loop entry.
 
-The extension detours this entry. When materialization mode is active, the hook:
+The extension detours this entry. For an ordinary protected function, when
+materialization mode is active, the hook:
 
 1. receives `zend_execute_data *` in `ECX`;
 2. obtains `execute_data->func`;
@@ -699,7 +707,10 @@ The extension detours this entry. When materialization mode is active, the hook:
 5. deep-copies the op-array body;
 6. returns `-1` immediately.
 
-No opcode from the encoded function body is executed during this capture path.
+No opcode from the target function body is executed during this ordinary
+capture path. Dynamic-key providers are a deliberate exception: the provider
+must run so the loader can obtain the key. The target remains scoped separately
+and is captured as soon as its real body becomes available.
 
 ### 7. Request-key global
 
@@ -835,20 +846,119 @@ CG(function_table)
 The pointers are copied into a temporary list before any calls are made. This
 avoids invalidating a hash-table iterator if the runtime changes state.
 
-For each encoded function:
+The dumper first sends ordinary protected functions through the direct loader
+materializer. Any unresolved function is then driven through
+`zend_call_function()` with a synthetic call frame. `NULL` arguments are
+allocated according to the function signature, with a hard safety limit of
+`4096`. The function handler is set directly to the encoded `zend_function`.
 
-1. Create a `zend_fcall_info` and `zend_fcall_info_cache`.
-2. Supply `NULL` arguments up to `num_args`, capped at 16.
-3. Set `fcc.function_handler` directly to the encoded `zend_function`.
-4. Enable `opcodedump_materialize_active`.
-5. Call `zend_call_function()`.
-6. The loader reaches `sub_1006FF10`.
-7. The VM-loop hook snapshots the materialized op-array.
-8. The hook returns before the first application opcode executes.
-9. Any pending exception is cleared.
+For ordinary protected functions, the VM-loop hook snapshots the materialized
+op-array and returns before the first target opcode executes. Dynamic-key
+functions require the scoped fallback described below.
 
-This is not normal execution. The function call is used only to force the loader
-to construct the opcode body.
+## Dynamic-Key-Protected Global Functions
+
+ionCube dynamic-key protection delays decryption of a target function until a
+user-defined provider returns the expected key. For example, the included test
+fixture uses:
+
+```php
+$licenseSalt = 'CLIENT_ABC_2026';
+
+function dk()
+{
+    global $licenseSalt;
+    return hash('sha256', $licenseSalt);
+}
+
+// @ioncube.dynamickey dk() -> "..." RANDOM
+function premiumFeature()
+{
+    echo "Dynamic Key function executed successfully";
+}
+```
+
+The old global VM-loop policy skipped every encoded function while capture was
+active. That also skipped `dk()`, so the loader never received a key and the
+target body could not be materialized. The direct materializer alone cannot
+solve this case because the key exists only at runtime.
+
+The resolved path is target-scoped:
+
+1. `{main}` is materialized first. Simple top-level `CV = CONST` assignments are
+   temporarily seeded into `EG(symbol_table)`, allowing providers that use
+   `global` variables to observe the same scalar setup as the source file.
+2. Handler encryption patches are restored before runtime dispatch. A provider
+   must execute through the loader's normal handler path.
+3. `opcodedump_dynkey_capture_target` identifies the one op-array being
+   collected. The VM hook passes through any different encoded function, so a
+   provider such as `dk()` can execute and return the key.
+4. If the target is still lazy at VM-loop entry, the hook allows the loader's
+   dynamic-key materialization path to continue instead of saving an incomplete
+   op-array.
+5. The loader-specific `op_array + 0x38` static-variables field is temporarily
+   pointed at a safe aligned dummy while the lazy path runs. This avoids a null
+   or encoded `MAP_PTR` dereference before the VM-loop capture point.
+6. Once materialization has populated the op-array, the dumper prefers the
+   aligned `op_array->opcodes` pointer and uses `desc[15]` only as a fallback.
+   The opcode count comes from `op_array->last`, or `desc[27]` when necessary.
+7. A post-call and post-bailout fallback snapshots functions that became valid
+   after the first hook entry.
+8. The original op-array, the `+0x38` field, seeded globals, handler patches,
+   exceptions, and synthetic arguments are restored or released on every path.
+
+### IDA-verified dynamic-key path
+
+The following locations were verified against the bundled PHP 8.1 loader whose
+SHA-256 is recorded in Runtime Setup:
+
+| IDA VA | RVA | Function/instruction | Observed role |
+|---:|---:|---|---|
+| `0x10002C50` | `0x2C50` | `sub_10002C50` | direct op-array materializer and dynamic-key gate |
+| `0x10002C71` | `0x2C71` | `mov esi,[eax+4Ch]` | loads the per-function record from `desc[19]` |
+| `0x10002CB9` | `0x2CB9` | `cmp byte ptr [esi+18h],0` | tests the dynamic-key marker at `record + 0x18` |
+| `0x10002CF5` | `0x2CF5` | `call sub_10003860` | enters the dynamic-key preparation/resolution branch |
+| `0x10002D71` | `0x2D71` | `mov byte ptr [esi+18h],0` | clears the marker after successful key processing |
+| `0x10002DC5` | `0x2DC5` | `mov eax,[esi+40h]` / `call eax` | invokes the record's final materialization callback |
+| `0x10071660` | `0x71660` | `sub_10071660` | restores `opcodes`, `last`, and `desc[15]` from the loader descriptor |
+| `0x10071750` | `0x71750` | `sub_10071750` | lazy execution wrapper around materialization, restore, static variables, and VM entry |
+| `0x1006FF10` | `0x6FF10` | `sub_1006FF10` | loader VM-loop entry used by the capture hook |
+
+`sub_10071750` confirms the ordering that matters to the fix. It checks the odd
+or sentinel `op_array->opcodes` value, calls `sub_10002C50`, then calls
+`sub_10071660`. Before entering `sub_1006FF10`, it reads the static-variables
+field at `op_array + 0x38` and follows either the direct pointer or `MAP_PTR`
+path. This is why the dumper must install a temporary valid `+0x38` value before
+driving a dynamic-key target and restore it afterward.
+
+Inside `sub_10002C50`, the record is reached through
+`op_array->reserved[3] -> desc[19]`. The byte at `record + 0x18` selects the
+additional dynamic-key branch; after that branch succeeds, the loader clears
+the byte and calls the callback stored at `record + 0x40`. These observations
+are the loader-side basis for `ic_op_array_has_dynkey_encrypted_body()` and the
+runtime fallback.
+
+The main implementation points are:
+
+| Function/state | Role |
+|---|---|
+| `ic_op_array_has_dynkey_encrypted_body()` | detects the dynamic-key marker reached through `desc[19]` |
+| `ic_seed_simple_main_assignments()` | temporarily recreates simple top-level scalar globals |
+| `opcodedump_dynkey_capture_target` | separates the protected target from helper/provider calls |
+| `ic_vm_loop_should_skip_and_capture()` | captures a ready target or passes through a provider/lazy target |
+| `ic_dynkey_post_materialize_snapshot()` | copies a target that became readable after lazy materialization |
+| `ic_runtime_materialize_all_functions()` | coordinates direct capture, runtime fallback, and cleanup |
+
+`dynamic_protected_encoded.php` is the regression fixture for this path. Its
+dump contains the top-level assignment and call, the complete `dk()` provider
+(`ZEND_BIND_GLOBAL` and the `hash()` call), and the complete
+`premiumFeature()` body (`ZEND_ECHO`, `ZEND_RETURN`).
+
+Dynamic-key capture necessarily executes the key provider. A provider with
+external side effects can therefore produce those side effects during a dump.
+The protected target is skipped once its materialized body reaches the capture
+hook. Providers that depend on complex top-level execution, external services,
+or unavailable request state may still require an environment-specific setup.
 
 ## Stabilizing Transient Memory
 
@@ -1567,7 +1677,14 @@ flow must all match.
   `ic_static_materialize_all_class_methods()`
 - Runtime function capture:
   `ic_runtime_materialize_all_functions()`
+- Dynamic-key detection and post-materialization capture:
+  `ic_op_array_has_dynkey_encrypted_body()` and
+  `ic_dynkey_post_materialize_snapshot()`
+- Dynamic-key provider state:
+  `ic_seed_simple_main_assignments()` and
+  `ic_seeded_global_state_restore()`
 - VM-loop snapshot:
+  `ic_vm_loop_should_skip_and_capture()` and
   `ic_runtime_capture_execute_data()`
 - Jump conversion:
   `dasm_jump_target_index()` and `opcode_jump_targets()`
